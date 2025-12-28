@@ -1,12 +1,27 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>OfertaPrimeX</title>
+    <meta charset="UTF-8">
+    <title>Login Mercado Livre</title>
 </head>
 <body>
-  <h1>OfertaPrimeX</h1>
-  <p>Vitrine de produtos</p>
-  <a href="/callback.html">Área de integração Mercado Livre</a>
+    <h2>Conectar ao Mercado Livre</h2>
+
+    <button onclick="login()">Conectar</button>
+
+    <script>
+        function login() {
+            const clientId = "7737778191417887";
+            const redirectUri = "https://ofertaprimex-site.vercel.app/callback.html";
+
+            const url =
+                "https://auth.mercadolibre.com.br/authorization" +
+                "?response_type=code" +
+                "&client_id=" + clientId +
+                "&redirect_uri=" + encodeURIComponent(redirectUri);
+
+            window.location.href = url;
+        }
+    </script>
 </body>
 </html>

@@ -1,20 +1,29 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Callback Mercado Livre</title>
+    <meta charset="UTF-8">
+    <title>Callback - Mercado Livre OAuth</title>
 </head>
-<body>
-  <h2>Callback Mercado Livre</h2>
+<body style="font-family: Arial; text-align: center; margin-top: 50px;">
+    <h2>Retorno de Autorização</h2>
+    <p id="msg">Processando...</p>
 
-  <pre id="code"></pre>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get("code");
+        const error = params.get("error");
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("code");
-
-    document.getElementById("code").innerText =
-      code ? "Código recebido:\n" + code : "Nenhum código recebido";
-  </script>
+        if (error) {
+            document.getElementById("msg").innerHTML =
+                "❌ Erro na autorização: " + error;
+        } else if (code) {
+            document.getElementById("msg").innerHTML =
+                "✅ Código recebido:<br><br><b>" + code + "</b>";
+            console.log("CODE:", code);
+        } else {
+            document.getElementById("msg").innerHTML =
+                "⚠️ Nenhum código recebido.";
+        }
+    </script>
 </body>
 </html>
