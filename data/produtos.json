@@ -1,24 +1,12 @@
 [
   {
     "id": 1,
-    "nome": "Smart TV 50\" 4K",
-    "preco": "R$ 2.399,00",
-    "plataforma": "Mercado Livre",
+    "nome": "Produto Exemplo",
     "categoria": "Eletrônicos",
-    "link": "https://seulinkafiliado.com",
-    "imagem": "images/placeholder.png",
-    "top": false,
-    "personalizado": true
-  },
-  {
-    "id": 2,
-    "nome": "Notebook i5 16GB",
-    "preco": "R$ 3.899,00",
-    "plataforma": "Amazon",
-    "categoria": "Informática",
-    "link": "https://seulinkafiliado.com",
-    "imagem": "images/placeholder.png",
-    "top": true,
-    "personalizado": true
+    "plataforma": "mercado-livre",
+    "preco": 199.90,
+    "link": "https://link-afiliado.com",
+    "imagem": "images/mercado-livre/produto.png",
+    "destaque": "mais-procurados"
   }
 ]
