@@ -1,15 +1,213 @@
-h1 {
-    color: #1f3c88;
+/* ================= RESET BÁSICO ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-h2, .section-title {
-    color: #2f5bea;
-}
-
-h3 {
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f5f5f5;
     color: #333;
 }
 
-.platform-title {
+/* ================= CONTAINER ================= */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+/* ================= HEADER ================= */
+.header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
     color: #ff6a00;
+}
+
+.logo span {
+    color: #222;
+}
+
+.menu a {
+    margin-left: 16px;
+    text-decoration: none;
+    color: #555;
+    font-size: 14px;
+}
+
+.menu a:hover {
+    color: #ff6a00;
+}
+
+/* ================= HERO ================= */
+.hero {
+    background: linear-gradient(135deg, #ff6a00, #ff8c42);
+    color: #fff;
+    padding: 48px 0;
+    text-align: center;
+}
+
+.hero-title {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.hero-subtitle {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+/* ================= SECTIONS ================= */
+.section {
+    padding: 40px 0;
+    background-color: #f5f5f5;
+}
+
+.section-gray {
+    background-color: #ededed;
+}
+
+.section-title {
+    font-size: 22px;
+    margin-bottom: 24px;
+    color: #ff6a00;
+}
+
+/* ================= PLATAFORM TITLE ================= */
+.platform-title {
+    font-size: 18px;
+    margin: 24px 0 12px;
+    color: #333;
+}
+
+/* ================= GRID DE PRODUTOS ================= */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+}
+
+/* Grid menor para Top 20 */
+.small-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+/* ================= CARD PRODUTO ================= */
+.product-card {
+    background-color: #ffffff;
+    border-radius: 6px;
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.product-card img {
+    width: 100%;
+    max-height: 150px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+/* Card menor */
+.product-card.small img {
+    max-height: 120px;
+}
+
+/* ================= TEXTOS DO CARD ================= */
+.product-title {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+.platform {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 4px;
+}
+
+.price {
+    font-size: 15px;
+    font-weight: bold;
+    color: #2e7d32;
+    margin-bottom: 8px;
+}
+
+/* ================= BOTÕES ================= */
+.btn {
+    display: inline-block;
+    background-color: #ff6a00;
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 12px;
+    font-size: 13px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.btn:hover {
+    background-color: #e85f00;
+}
+
+/* Botão pequeno */
+.btn.small {
+    font-size: 12px;
+    padding: 6px 10px;
+}
+
+/* ================= QUEM SOMOS ================= */
+.about-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #444;
+    max-width: 800px;
+}
+
+/* ================= FOOTER ================= */
+.footer {
+    background-color: #ffffff;
+    border-top: 1px solid #ddd;
+    text-align: center;
+    padding: 16px;
+    font-size: 13px;
+    color: #666;
+}
+
+/* ================= RESPONSIVO ================= */
+@media (max-width: 768px) {
+    .menu {
+        display: none;
+    }
+
+    .hero-title {
+        font-size: 24px;
+    }
+
+    .section-title {
+        font-size: 20px;
+    }
 }

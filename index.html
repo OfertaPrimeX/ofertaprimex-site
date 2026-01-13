@@ -2,198 +2,119 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-
-    <title>OfertaPrimeX - Compare preços nas maiores plataformas</title>
-
+    <title>OfertaPrimeX - Compare os Melhores Preços</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- ================= CSS ================= -->
-    <!-- CSS fica na pasta /css -->
+    <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
 
-    <!-- ================= HEADER ================= -->
-    <header class="header">
-        <div class="container header-content">
+<!-- ================= HEADER ================= -->
+<header class="header">
+    <div class="container header-content">
+        <div class="logo">
+            OfertaPrime<span>X</span>
+        </div>
 
-            <!-- Logo (imagem depois será substituída pela real) -->
-            <div class="logo">
-                <img src="images/placeholder.png" alt="OfertaPrimeX Logo">
+        <nav class="menu">
+            <a href="#home">Home</a>
+            <a href="#procurados">Mais Procurados</a>
+            <a href="#top20">Top 20</a>
+            <a href="#categorias">Categorias</a>
+            <a href="#sobre">Quem Somos</a>
+        </nav>
+    </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="home">
+    <div class="container">
+        <h1 class="hero-title">
+            Compare preços nas maiores plataformas
+        </h1>
+        <p class="hero-subtitle">
+            Mercado Livre • Amazon • Shopee • Magalu
+        </p>
+    </div>
+</section>
+
+<!-- ================= MAIS PROCURADOS ================= -->
+<section class="section" id="procurados">
+    <div class="container">
+        <h2 class="section-title">🔥 Mais Procurados</h2>
+
+        <div class="products-grid">
+            <div class="product-card">
+                <img src="images/placeholder.png" alt="Produto">
+                <h3 class="product-title">Produto Exemplo</h3>
+                <p class="platform">Mercado Livre</p>
+                <p class="price">R$ 199,90</p>
+                <a href="#" class="btn">Ver Oferta</a>
             </div>
 
-            <!-- Menu principal -->
-            <nav class="menu">
-                <a href="#home">Home</a>
-                <a href="#mais-procurados">Mais Procurados</a>
-                <a href="#top20">Top 20</a>
-                <a href="#categorias">Categorias</a>
-                <a href="#quem-somos">Quem Somos</a>
-            </nav>
-
-        </div>
-    </header>
-
-    <!-- ================= HERO ================= -->
-    <section class="hero" id="home">
-        <div class="container">
-            <h1 class="hero-title">
-                Compare preços nas maiores plataformas
-            </h1>
-            <p class="hero-subtitle">
-                Mercado Livre • Amazon • Shopee • Magalu
-            </p>
-        </div>
-    </section>
-
-    <!-- ================= MAIS PROCURADOS ================= -->
-    <section class="section" id="mais-procurados">
-        <div class="container">
-
-            <h2 class="section-title highlight">
-                🔥 Mais Procurados
-            </h2>
-
-            <div class="products-grid">
-
-                <!-- Card de produto -->
-                <div class="product-card">
-                    <img src="images/placeholder.png" alt="Produto exemplo">
-
-                    <h3 class="product-title">
-                        Produto Exemplo
-                    </h3>
-
-                    <p class="platform">
-                        Mercado Livre
-                    </p>
-
-                    <p class="price">
-                        R$ 199,90
-                    </p>
-
-                    <a href="#" class="btn">
-                        Ver Oferta
-                    </a>
-                </div>
-
-                <!-- Outro exemplo -->
-                <div class="product-card">
-                    <img src="images/placeholder.png" alt="Produto exemplo">
-
-                    <h3 class="product-title">
-                        Produto Exemplo
-                    </h3>
-
-                    <p class="platform">
-                        Amazon
-                    </p>
-
-                    <p class="price">
-                        R$ 189,90
-                    </p>
-
-                    <a href="#" class="btn">
-                        Ver Oferta
-                    </a>
-                </div>
-
+            <div class="product-card">
+                <img src="images/placeholder.png" alt="Produto">
+                <h3 class="product-title">Produto Exemplo</h3>
+                <p class="platform">Amazon</p>
+                <p class="price">R$ 189,90</p>
+                <a href="#" class="btn">Ver Oferta</a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- ================= TOP 20 ================= -->
-    <section class="section section-gray" id="top20">
-        <div class="container">
+<!-- ================= TOP 20 ================= -->
+<section class="section section-gray" id="top20">
+    <div class="container">
+        <h2 class="section-title">🏆 Top 20 das Plataformas</h2>
 
-            <h2 class="section-title highlight">
-                🏆 Top 20 das Plataformas
-            </h2>
-
-            <!-- Mercado Livre -->
-            <h3 class="platform-title">
-                Mercado Livre
-            </h3>
-
-            <div class="products-grid">
-
-                <div class="product-card small">
-                    <img src="images/placeholder.png" alt="Produto Top">
-
-                    <h3 class="product-title">
-                        Produto Top
-                    </h3>
-
-                    <p class="price">
-                        R$ 99,90
-                    </p>
-
-                    <a href="#" class="btn small">
-                        Ver
-                    </a>
-                </div>
-
-                <!-- repetir até 20 -->
+        <!-- Mercado Livre -->
+        <h3 class="platform-title">Mercado Livre</h3>
+        <div class="products-grid small-grid">
+            <div class="product-card small">
+                <img src="images/placeholder.png" alt="Produto">
+                <h3 class="product-title">Produto Top</h3>
+                <p class="price">R$ 99,90</p>
+                <a href="#" class="btn small">Ver</a>
             </div>
+        </div>
 
-            <!-- Amazon -->
-            <h3 class="platform-title">
-                Amazon
-            </h3>
-
-            <div class="products-grid">
-                <div class="product-card small">
-                    <img src="images/placeholder.png" alt="Produto Top">
-
-                    <h3 class="product-title">
-                        Produto Top
-                    </h3>
-
-                    <p class="price">
-                        R$ 109,90
-                    </p>
-
-                    <a href="#" class="btn small">
-                        Ver
-                    </a>
-                </div>
+        <!-- Amazon -->
+        <h3 class="platform-title">Amazon</h3>
+        <div class="products-grid small-grid">
+            <div class="product-card small">
+                <img src="images/placeholder.png" alt="Produto">
+                <h3 class="product-title">Produto Top</h3>
+                <p class="price">R$ 109,90</p>
+                <a href="#" class="btn small">Ver</a>
             </div>
-
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- ================= QUEM SOMOS ================= -->
-    <section class="section" id="quem-somos">
-        <div class="container">
+<!-- ================= QUEM SOMOS ================= -->
+<section class="section" id="sobre">
+    <div class="container">
+        <h2 class="section-title">Quem Somos</h2>
+        <p class="about-text">
+            O OfertaPrimeX é uma vitrine inteligente de ofertas.
+            Pesquisamos produtos nas maiores plataformas do Brasil,
+            comparamos preços, reputação dos vendedores
+            e exibimos os mais procurados e mais vendidos,
+            sempre com links oficiais de afiliados.
+        </p>
+    </div>
+</section>
 
-            <h2 class="section-title highlight">
-                Quem Somos
-            </h2>
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+    <p>© 2026 OfertaPrimeX - Todos os direitos reservados</p>
+</footer>
 
-            <p class="about">
-                Somos uma vitrine inteligente de ofertas.
-                Comparamos preços nas maiores plataformas do Brasil
-                e mostramos os produtos mais procurados e mais vendidos,
-                sempre utilizando links de afiliados oficiais.
-            </p>
-
-        </div>
-    </section>
-
-    <!-- ================= FOOTER ================= -->
-    <footer class="footer">
-        <div class="container">
-            <p>
-                © 2026 OfertaPrimeX - Todos os direitos reservados
-            </p>
-        </div>
-    </footer>
-
-    <!-- ================= JS ================= -->
-    <!-- JS sempre no final -->
-    <script src="js/main.js"></script>
-    <script src="js/app.js"></script>
+<!-- JS -->
+<script src="js/main.js"></script>
+<script src="js/app.js"></script>
 
 </body>
 </html>
