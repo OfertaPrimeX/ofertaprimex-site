@@ -1,263 +1,114 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <!-- ========================= -->
-    <!-- CONFIGURAÇÕES BÁSICAS -->
-    <!-- ========================= -->
     <meta charset="UTF-8">
+    <title>OfertaPrimeX - Os Melhores Preços da Internet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OfertaPrimeX - As Melhores Ofertas da Internet</title>
 
-    <!-- ========================= -->
-    <!-- ESTILO (CSS) -->
-    <!-- ========================= -->
-    <style>
-        /* RESET BÁSICO */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        body {
-            background-color: #f5f5f5;
-            color: #333;
-        }
-
-        /* ========================= */
-        /* HEADER / TOPO DO SITE */
-        /* ========================= */
-        header {
-            background: #0d6efd;
-            color: #fff;
-            padding: 20px;
-        }
-
-        header h1 {
-            margin-bottom: 5px;
-        }
-
-        header p {
-            font-size: 14px;
-        }
-
-        /* MENU DE NAVEGAÇÃO */
-        nav {
-            margin-top: 15px;
-        }
-
-        nav a {
-            color: #fff;
-            margin-right: 15px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        nav a:hover {
-            text-decoration: underline;
-        }
-
-        /* ========================= */
-        /* CONTAINER PADRÃO */
-        /* ========================= */
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        /* ========================= */
-        /* TÍTULOS DE SEÇÃO */
-        /* ========================= */
-        .section-title {
-            margin-bottom: 20px;
-            border-left: 5px solid #0d6efd;
-            padding-left: 10px;
-            font-size: 22px;
-        }
-
-        /* ========================= */
-        /* GRID DE PRODUTOS */
-        /* ========================= */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background: #fff;
-            border-radius: 6px;
-            padding: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .card img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            margin-bottom: 10px;
-            border-radius: 4px;
-        }
-
-        .card h3 {
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-
-        .card p {
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .card a {
-            background: #0d6efd;
-            color: #fff;
-            text-align: center;
-            padding: 10px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .card a:hover {
-            background: #084298;
-        }
-
-        /* ========================= */
-        /* QUEM SOMOS */
-        /* ========================= */
-        .about {
-            background: #fff;
-            padding: 25px;
-            border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            line-height: 1.6;
-        }
-
-        /* ========================= */
-        /* RODAPÉ */
-        /* ========================= */
-        footer {
-            background: #222;
-            color: #fff;
-            text-align: center;
-            padding: 20px;
-            margin-top: 40px;
-            font-size: 14px;
-        }
-    </style>
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <!-- ========================= -->
-    <!-- TOPO / HEADER -->
-    <!-- ========================= -->
-    <header>
-        <h1>OfertaPrimeX</h1>
-        <p>As melhores ofertas das maiores plataformas, em um só lugar</p>
+    <!-- ================= HEADER ================= -->
+    <header class="header">
+        <div class="container header-content">
+            <!-- Logo (imagem será adicionada depois) -->
+            <div class="logo">
+                OfertaPrime<span>X</span>
+            </div>
 
-        <!-- MENU -->
-        <nav>
-            <a href="#top20">TOP 20</a>
-            <a href="#categorias">Categorias</a>
-            <a href="#quem-somos">Quem Somos</a>
-        </nav>
+            <!-- Menu -->
+            <nav class="menu">
+                <a href="#">Home</a>
+                <a href="#">Mais Procurados</a>
+                <a href="#">Top 20</a>
+                <a href="#">Categorias</a>
+                <a href="#">Quem Somos</a>
+            </nav>
+        </div>
     </header>
 
-    <!-- ========================= -->
-    <!-- TOP 20 GERAL -->
-    <!-- ========================= -->
-    <section id="top20" class="container">
-        <h2 class="section-title">🔥 TOP 20 Ofertas do Momento</h2>
-
-        <div class="grid">
-            <!-- CARD DE PRODUTO (EXEMPLO) -->
-            <div class="card">
-                <img src="https://via.placeholder.com/300x180" alt="Produto Exemplo">
-                <h3>Produto Exemplo Mercado Livre</h3>
-                <p>⭐⭐⭐⭐⭐ | Melhor preço encontrado</p>
-                <!-- LINK SERÁ DE AFILIADO NO FUTURO -->
-                <a href="#" target="_blank">Ver Oferta</a>
-            </div>
-
-            <!-- Você pode duplicar esse bloco para simular mais produtos -->
+    <!-- ================= HERO ================= -->
+    <section class="hero">
+        <div class="container">
+            <h1>Compare preços nas maiores plataformas</h1>
+            <p>Mercado Livre • Amazon • Shopee • Magalu</p>
         </div>
     </section>
 
-    <!-- ========================= -->
-    <!-- CATEGORIAS -->
-    <!-- ========================= -->
-    <section id="categorias" class="container">
-        <h2 class="section-title">📦 Categorias</h2>
+    <!-- ================= MAIS PROCURADOS ================= -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">🔥 Mais Procurados</h2>
 
-        <!-- ELETRÔNICOS -->
-        <h3>Eletrônicos</h3>
-        <div class="grid">
-            <div class="card">
-                <img src="https://via.placeholder.com/300x180" alt="Eletrônicos">
-                <h3>Smartphone Exemplo</h3>
-                <p>⭐⭐⭐⭐ | Vendedor 3⭐+</p>
-                <a href="#">Ver Oferta</a>
-            </div>
-        </div>
+            <div class="products-grid">
+                <!-- Produto -->
+                <div class="product-card">
+                    <img src="https://via.placeholder.com/200x200" alt="Produto">
+                    <h3>Produto Exemplo</h3>
+                    <p class="platform">Mercado Livre</p>
+                    <p class="price">R$ 199,90</p>
+                    <a href="#" class="btn">Ver Oferta</a>
+                </div>
 
-        <!-- INFORMÁTICA -->
-        <h3 style="margin-top:30px;">Informática</h3>
-        <div class="grid">
-            <div class="card">
-                <img src="https://via.placeholder.com/300x180" alt="Informática">
-                <h3>Notebook Exemplo</h3>
-                <p>⭐⭐⭐⭐⭐ | Melhor custo-benefício</p>
-                <a href="#">Ver Oferta</a>
-            </div>
-        </div>
-
-        <!-- ESPORTES E FITNESS -->
-        <h3 style="margin-top:30px;">Esportes & Fitness</h3>
-        <div class="grid">
-            <div class="card">
-                <img src="https://via.placeholder.com/300x180" alt="Esportes">
-                <h3>Equipamento Fitness</h3>
-                <p>⭐⭐⭐⭐ | Alta procura</p>
-                <a href="#">Ver Oferta</a>
+                <!-- Replicar card -->
+                <div class="product-card">
+                    <img src="https://via.placeholder.com/200x200">
+                    <h3>Produto Exemplo</h3>
+                    <p class="platform">Amazon</p>
+                    <p class="price">R$ 189,90</p>
+                    <a href="#" class="btn">Ver Oferta</a>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- ========================= -->
-    <!-- QUEM SOMOS -->
-    <!-- ========================= -->
-    <section id="quem-somos" class="container">
-        <h2 class="section-title">ℹ️ Quem Somos</h2>
+    <!-- ================= TOP 20 ================= -->
+    <section class="section section-gray">
+        <div class="container">
+            <h2 class="section-title">🏆 Top 20 das Plataformas</h2>
 
-        <div class="about">
-            <p>
-                A <strong>OfertaPrimeX</strong> é uma vitrine inteligente de ofertas.
-                Nós pesquisamos os melhores produtos nas maiores plataformas
-                como Mercado Livre, Shopee, Amazon e Magalu.
-            </p>
-            <p>
-                Nosso objetivo é economizar seu tempo, mostrando apenas
-                produtos bem avaliados, com bons preços e vendedores confiáveis.
-            </p>
-            <p>
-                Não vendemos produtos — somos afiliados e divulgadores.
-                Ao clicar em uma oferta, você é direcionado para a plataforma oficial.
+            <!-- Plataforma -->
+            <h3 class="platform-title">Mercado Livre</h3>
+            <div class="products-grid">
+                <div class="product-card small">
+                    <img src="https://via.placeholder.com/200x200">
+                    <h3>Produto Top</h3>
+                    <p class="price">R$ 99,90</p>
+                    <a href="#" class="btn small">Ver</a>
+                </div>
+                <!-- repetir até 20 -->
+            </div>
+
+            <h3 class="platform-title">Amazon</h3>
+            <div class="products-grid">
+                <div class="product-card small">
+                    <img src="https://via.placeholder.com/200x200">
+                    <h3>Produto Top</h3>
+                    <p class="price">R$ 109,90</p>
+                    <a href="#" class="btn small">Ver</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= QUEM SOMOS ================= -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Quem Somos</h2>
+            <p class="about">
+                Somos uma vitrine inteligente de ofertas. 
+                Comparamos preços nas maiores plataformas do Brasil 
+                e mostramos os produtos mais procurados e mais vendidos,
+                sempre com links de afiliados oficiais.
             </p>
         </div>
     </section>
 
-    <!-- ========================= -->
-    <!-- RODAPÉ -->
-    <!-- ========================= -->
-    <footer>
-        © 2026 - OfertaPrimeX • Todos os direitos reservados
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <p>© 2026 OfertaPrimeX - Todos os direitos reservados</p>
     </footer>
 
 </body>
