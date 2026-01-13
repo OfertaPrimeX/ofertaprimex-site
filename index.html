@@ -2,108 +2,198 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>OfertaPrimeX - Os Melhores Preços da Internet</title>
+
+    <title>OfertaPrimeX - Compare preços nas maiores plataformas</title>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- CSS principal (estrutura correta) -->
+    <!-- ================= CSS ================= -->
+    <!-- CSS fica na pasta /css -->
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
     <!-- ================= HEADER ================= -->
     <header class="header">
         <div class="container header-content">
+
+            <!-- Logo (imagem depois será substituída pela real) -->
             <div class="logo">
-                OfertaPrime<span>X</span>
+                <img src="images/placeholder.png" alt="OfertaPrimeX Logo">
             </div>
 
+            <!-- Menu principal -->
             <nav class="menu">
-                <a href="#">Home</a>
-                <a href="#">Mais Procurados</a>
-                <a href="#">Top 20</a>
-                <a href="#">Categorias</a>
-                <a href="#">Quem Somos</a>
+                <a href="#home">Home</a>
+                <a href="#mais-procurados">Mais Procurados</a>
+                <a href="#top20">Top 20</a>
+                <a href="#categorias">Categorias</a>
+                <a href="#quem-somos">Quem Somos</a>
             </nav>
+
         </div>
     </header>
 
     <!-- ================= HERO ================= -->
-    <section class="hero">
+    <section class="hero" id="home">
         <div class="container">
-            <h1>Compare preços nas maiores plataformas</h1>
-            <p>Mercado Livre • Amazon • Shopee • Magalu</p>
+            <h1 class="hero-title">
+                Compare preços nas maiores plataformas
+            </h1>
+            <p class="hero-subtitle">
+                Mercado Livre • Amazon • Shopee • Magalu
+            </p>
         </div>
     </section>
 
     <!-- ================= MAIS PROCURADOS ================= -->
-    <section class="section">
+    <section class="section" id="mais-procurados">
         <div class="container">
-            <h2 class="section-title">🔥 Mais Procurados</h2>
+
+            <h2 class="section-title highlight">
+                🔥 Mais Procurados
+            </h2>
 
             <div class="products-grid">
+
+                <!-- Card de produto -->
                 <div class="product-card">
-                    <img src="images/placeholder.png" alt="Produto">
-                    <h3>Produto Exemplo</h3>
-                    <p class="platform">Mercado Livre</p>
-                    <p class="price">R$ 199,90</p>
-                    <a href="#" class="btn">Ver Oferta</a>
+                    <img src="images/placeholder.png" alt="Produto exemplo">
+
+                    <h3 class="product-title">
+                        Produto Exemplo
+                    </h3>
+
+                    <p class="platform">
+                        Mercado Livre
+                    </p>
+
+                    <p class="price">
+                        R$ 199,90
+                    </p>
+
+                    <a href="#" class="btn">
+                        Ver Oferta
+                    </a>
                 </div>
 
+                <!-- Outro exemplo -->
                 <div class="product-card">
-                    <img src="images/placeholder.png" alt="Produto">
-                    <h3>Produto Exemplo</h3>
-                    <p class="platform">Amazon</p>
-                    <p class="price">R$ 189,90</p>
-                    <a href="#" class="btn">Ver Oferta</a>
+                    <img src="images/placeholder.png" alt="Produto exemplo">
+
+                    <h3 class="product-title">
+                        Produto Exemplo
+                    </h3>
+
+                    <p class="platform">
+                        Amazon
+                    </p>
+
+                    <p class="price">
+                        R$ 189,90
+                    </p>
+
+                    <a href="#" class="btn">
+                        Ver Oferta
+                    </a>
                 </div>
+
             </div>
         </div>
     </section>
 
     <!-- ================= TOP 20 ================= -->
-    <section class="section section-gray">
+    <section class="section section-gray" id="top20">
         <div class="container">
-            <h2 class="section-title">🏆 Top 20 das Plataformas</h2>
 
-            <h3 class="platform-title">Mercado Livre</h3>
+            <h2 class="section-title highlight">
+                🏆 Top 20 das Plataformas
+            </h2>
+
+            <!-- Mercado Livre -->
+            <h3 class="platform-title">
+                Mercado Livre
+            </h3>
+
+            <div class="products-grid">
+
+                <div class="product-card small">
+                    <img src="images/placeholder.png" alt="Produto Top">
+
+                    <h3 class="product-title">
+                        Produto Top
+                    </h3>
+
+                    <p class="price">
+                        R$ 99,90
+                    </p>
+
+                    <a href="#" class="btn small">
+                        Ver
+                    </a>
+                </div>
+
+                <!-- repetir até 20 -->
+            </div>
+
+            <!-- Amazon -->
+            <h3 class="platform-title">
+                Amazon
+            </h3>
+
             <div class="products-grid">
                 <div class="product-card small">
-                    <img src="images/placeholder.png" alt="Produto">
-                    <h3>Produto Top</h3>
-                    <p class="price">R$ 99,90</p>
-                    <a href="#" class="btn small">Ver</a>
+                    <img src="images/placeholder.png" alt="Produto Top">
+
+                    <h3 class="product-title">
+                        Produto Top
+                    </h3>
+
+                    <p class="price">
+                        R$ 109,90
+                    </p>
+
+                    <a href="#" class="btn small">
+                        Ver
+                    </a>
                 </div>
             </div>
 
-            <h3 class="platform-title">Amazon</h3>
-            <div class="products-grid">
-                <div class="product-card small">
-                    <img src="images/placeholder.png" alt="Produto">
-                    <h3>Produto Top</h3>
-                    <p class="price">R$ 109,90</p>
-                    <a href="#" class="btn small">Ver</a>
-                </div>
-            </div>
         </div>
     </section>
 
     <!-- ================= QUEM SOMOS ================= -->
-    <section class="section">
+    <section class="section" id="quem-somos">
         <div class="container">
-            <h2 class="section-title">Quem Somos</h2>
+
+            <h2 class="section-title highlight">
+                Quem Somos
+            </h2>
+
             <p class="about">
                 Somos uma vitrine inteligente de ofertas.
                 Comparamos preços nas maiores plataformas do Brasil
                 e mostramos os produtos mais procurados e mais vendidos,
-                sempre com links de afiliados oficiais.
+                sempre utilizando links de afiliados oficiais.
             </p>
+
         </div>
     </section>
 
     <!-- ================= FOOTER ================= -->
     <footer class="footer">
-        <p>© 2026 OfertaPrimeX - Todos os direitos reservados</p>
+        <div class="container">
+            <p>
+                © 2026 OfertaPrimeX - Todos os direitos reservados
+            </p>
+        </div>
     </footer>
+
+    <!-- ================= JS ================= -->
+    <!-- JS sempre no final -->
+    <script src="js/main.js"></script>
+    <script src="js/app.js"></script>
 
 </body>
 </html>
