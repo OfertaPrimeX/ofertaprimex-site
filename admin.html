@@ -1,41 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - OfertaPrimeX</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS GLOBAL DO SITE -->
+    <!-- Mantemos o mesmo style.css para não quebrar o layout -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- ESTILOS APENAS DO ADMIN -->
+    <style>
+        body {
+            background-color: #f4f6f8;
+        }
+
+        .admin-container {
+            max-width: 720px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .admin-container h1 {
+            text-align: center;
+            color: #ff6a00;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .admin-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #ff6a00;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .admin-btn:hover {
+            background-color: #e85f00;
+        }
+
+        .preview {
+            margin-top: 30px;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+
+        .preview textarea {
+            width: 100%;
+            height: 260px;
+            font-size: 13px;
+        }
+
+        .info {
+            font-size: 13px;
+            color: #555;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER SIMPLES -->
+<header class="header">
+    <div class="container header-content">
+        <div class="logo">
+            OfertaPrime<span>X</span> | Admin
+        </div>
+    </div>
+</header>
+
+<!-- CONTEÚDO DO ADMIN -->
+<div class="admin-container">
+
+    <h1>Adicionar Produto</h1>
+
+    <!-- FORMULÁRIO -->
+    <form id="productForm">
+
+        <!-- NOME -->
+        <div class="form-group">
+            <label>Nome do Produto</label>
+            <input type="text" id="name" required>
+        </div>
+
+        <!-- CATEGORIA -->
+        <div class="form-group">
+            <label>Categoria</label>
+            <select id="category">
+                <option>Eletrônicos</option>
+                <option>Informática</option>
+                <option>Esportes e Fitness</option>
+            </select>
+        </div>
+
+        <!-- PLATAFORMA -->
+        <div class="form-group">
+            <label>Plataforma</label>
+            <select id="platform">
+                <option value="mercado-livre">Mercado Livre</option>
+                <option value="amazon">Amazon</option>
+                <option value="shopee">Shopee</option>
+                <option value="magalu">Magalu</option>
+            </select>
+        </div>
+
+        <!-- PREÇO -->
+        <div class="form-group">
+            <label>Preço (R$)</label>
+            <input type="number" step="0.01" id="price" required>
+        </div>
+
+        <!-- LINK -->
+        <div class="form-group">
+            <label>Link de Afiliado</label>
+            <input type="url" id="link" required>
+        </div>
+
+        <!-- IMAGEM -->
+        <div class="form-group">
+            <label>Imagem do Produto</label>
+            <input type="file" id="imageFile" accept="image/*">
+            <div class="info">
+                A imagem deve ser salva manualmente em:<br>
+                <strong>images/&lt;plataforma&gt;/</strong>
+            </div>
+        </div>
+
+        <!-- BOTÃO -->
+        <button type="submit" class="admin-btn">
+            Gerar JSON do Produto
+        </button>
+
+    </form>
+
+    <!-- PREVIEW / JSON -->
+    <div class="preview" id="preview"></div>
+
+</div>
+
+<!-- SCRIPT DO ADMIN -->
 <script>
-const form = document.getElementById('productForm');
-const preview = document.getElementById('preview');
+    const form = document.getElementById('productForm');
+    const preview = document.getElementById('preview');
 
-form.addEventListener('submit', function(e) {
-    e.preventDefault();
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
 
-    const produto = {
-        id: Date.now(),
-        nome: document.getElementById('name').value,
-        categoria: document.getElementById('category').value,
-        plataforma: document.getElementById('platform').value,
-        preco: parseFloat(document.getElementById('price').value),
-        link: document.getElementById('link').value,
-        imagem: getImagePath(),
-        destaque: "mais-procurados"
-    };
+        // Captura dos dados
+        const nome = document.getElementById('name').value;
+        const categoria = document.getElementById('category').value;
+        const plataforma = document.getElementById('platform').value;
+        const preco = parseFloat(document.getElementById('price').value);
+        const link = document.getElementById('link').value;
+        const imageInput = document.getElementById('imageFile');
 
-    preview.innerHTML = `
-        <h3>JSON do Produto</h3>
-        <textarea style="width:100%;height:220px;">
+        // Define imagem
+        let imagem = "images/placeholder.png";
+
+        if (imageInput.files.length > 0) {
+            imagem = `images/${plataforma}/${imageInput.files[0].name}`;
+        }
+
+        // Objeto produto (PADRÃO DO JSON)
+        const produto = {
+            id: Date.now(),
+            nome: nome,
+            categoria: categoria,
+            plataforma: plataforma,
+            preco: preco,
+            link: link,
+            imagem: imagem,
+            destaque: "mais-procurados"
+        };
+
+        // Exibe JSON para copiar
+        preview.innerHTML = `
+            <h3>JSON gerado</h3>
+            <textarea readonly>
 ${JSON.stringify(produto, null, 2)}
-        </textarea>
-
-        <p style="font-size:13px;color:#555;margin-top:8px">
-            👉 Copie este JSON e cole dentro de <b>data/produtos.json</b>
-        </p>
-    `;
-});
-
-function getImagePath() {
-    const platform = document.getElementById('platform').value;
-    const fileInput = document.getElementById('imageFile');
-
-    if (fileInput.files.length > 0) {
-        return `images/${platform}/${fileInput.files[0].name}`;
-    }
-
-    return "images/placeholder.png";
-}
+            </textarea>
+            <p class="info">
+                👉 Copie este JSON e cole dentro de <b>data/produtos.json</b><br>
+                👉 Salve a imagem em <b>${imagem}</b>
+            </p>
+        `;
+    });
 </script>
+
+</body>
+</html>
