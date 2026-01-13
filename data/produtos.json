@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "nome": "Smart TV 50\" 4K",
+    "preco": "R$ 2.399,00",
+    "plataforma": "Mercado Livre",
+    "categoria": "Eletrônicos",
+    "link": "https://seulinkafiliado.com",
+    "imagem": "images/placeholder.png",
+    "top": true,
+    "personalizado": false
+  },
+  {
+    "id": 2,
+    "nome": "Notebook i5 16GB",
+    "preco": "R$ 3.899,00",
+    "plataforma": "Amazon",
+    "categoria": "Informática",
+    "link": "https://seulinkafiliado.com",
+    "imagem": "images/placeholder.png",
+    "top": true,
+    "personalizado": true
+  }
+]
