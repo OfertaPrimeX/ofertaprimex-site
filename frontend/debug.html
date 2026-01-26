@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>OfertaPrimeX — Painel de Debug</title>
+  <title>OfertaPrimeX — Debug</title>
 
   <style>
     body {
@@ -12,18 +12,13 @@
       padding: 20px;
     }
 
-    h1 {
+    h1, h2 {
       color: #38bdf8;
     }
 
-    h2 {
-      margin-top: 30px;
-      color: #7dd3fc;
-    }
-
     button {
-      margin: 5px;
-      padding: 10px 15px;
+      margin: 4px;
+      padding: 8px 14px;
       background: #2563eb;
       color: white;
       border: none;
@@ -35,118 +30,218 @@
       background: #1d4ed8;
     }
 
-    .danger {
+    button.danger {
       background: #b91c1c;
     }
 
-    .danger:hover {
-      background: #991b1b;
+    input {
+      padding: 6px;
+      margin: 4px;
+      border-radius: 4px;
+      border: none;
+    }
+
+    .box {
+      background: #020617;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
     }
 
     pre {
       background: #020617;
       padding: 15px;
-      margin-top: 20px;
-      border-radius: 6px;
-      max-height: 450px;
+      border-radius: 8px;
+      max-height: 400px;
       overflow: auto;
-      white-space: pre-wrap;
     }
 
-    .group {
-      margin-bottom: 15px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border-bottom: 1px solid #334155;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      color: #38bdf8;
     }
   </style>
 </head>
 
 <body>
 
-  <h1>🛠️ Painel de Debug — OfertaPrimeX</h1>
-  <p>Use este painel para validar backend, banco e integrações.</p>
+<h1>🛠️ Painel de Debug — OfertaPrimeX</h1>
 
-  <!-- ============================= -->
-  <!-- GRUPO: BACKEND / INFRA        -->
-  <!-- ============================= -->
-  <h2>🔧 Backend / Infra</h2>
-  <div class="group">
-    <button onclick="callApi('/debug/status')">Status Backend</button>
-    <button onclick="callApi('/debug/env')">Variáveis de Ambiente</button>
-  </div>
+<!-- ================= STATUS / ENV / DB ================= -->
+<div class="box">
+  <h2>Backend</h2>
+  <button onclick="get('/debug/status')">Status</button>
+  <button onclick="get('/debug/env')">Env</button>
+  <button onclick="get('/debug/db')">Teste DB</button>
+  <button onclick="get('/debug/db/tabelas')">Tabelas</button>
+</div>
 
-  <!-- ============================= -->
-  <!-- GRUPO: BANCO DE DADOS         -->
-  <!-- ============================= -->
-  <h2>🗄️ Banco de Dados</h2>
-  <div class="group">
-    <button onclick="callApi('/debug/db')">Teste Conexão DB</button>
-    <button onclick="callApi('/debug/db/tabelas')">Listar Tabelas</button>
-    <button onclick="callApi('/debug/produtos')">Listar Produtos</button>
-    <button class="danger" onclick="postApi('/debug/db/insert-teste')">
+<!-- ================= DASHBOARD ================= -->
+<div class="box">
+  <h2>Dashboard</h2>
+  <button onclick="loadDashboard()">Atualizar</button>
+  <pre id="dashboard"></pre>
+</div>
+
+<!-- ================= PRODUTOS ================= -->
+<div class="box">
+  <h2>Produtos</h2>
+
+  <div>
+    <input type="date" id="prodInicio">
+    <input type="date" id="prodFim">
+    <button onclick="loadProdutos()">Listar</button>
+    <button class="danger" onclick="post('/debug/db/insert-teste')">
       Inserir Produto Teste
     </button>
   </div>
 
-  <!-- ============================= -->
-  <!-- GRUPO: MERCADO LIVRE          -->
-  <!-- ============================= -->
-  <h2>🛒 Mercado Livre</h2>
-  <div class="group">
-    <button onclick="callApi('/debug/meli/tokens')">
-      Listar Tokens Mercado Livre
-    </button>
-  </div>
+  <table id="produtosTable"></table>
+</div>
 
-  <!-- ============================= -->
-  <!-- SAÍDA                         -->
-  <!-- ============================= -->
-  <pre id="output">Resultado aparecerá aqui...</pre>
+<!-- ================= TOKENS ================= -->
+<div class="box">
+  <h2>Tokens Mercado Livre</h2>
+  <button onclick="loadTokens()">Listar Tokens</button>
+  <table id="tokensTable"></table>
+</div>
 
-  <script>
-    // =====================================================
-    // CONFIGURAÇÃO
-    // =====================================================
-    // 🔴 ALTERE APENAS ESTA URL SE MUDAR O BACKEND
-    const BASE_URL = 'https://yo0g0cg4c88w88osc4s04c0c.72.61.33.248.sslip.io';
+<!-- ================= SAÍDA RAW ================= -->
+<div class="box">
+  <h2>Resposta Bruta</h2>
+  <pre id="output">---</pre>
+</div>
 
-    // =====================================================
-    // FUNÇÃO PARA REQUISIÇÕES GET
-    // =====================================================
-    async function callApi(endpoint) {
-      document.getElementById('output').textContent = 'Carregando...';
+<script>
+  // 🔴 ALTERE SE NECESSÁRIO
+  const BASE_URL = 'https://yo0g0cg4c88w88osc4s04c0c.72.61.33.248.sslip.io';
 
-      try {
-        const res = await fetch(BASE_URL + endpoint);
-        const data = await res.json();
+  // ================= UTIL =================
+  async function get(endpoint) {
+    const res = await fetch(BASE_URL + endpoint);
+    const data = await res.json();
+    document.getElementById('output').textContent =
+      JSON.stringify(data, null, 2);
+    return data;
+  }
 
-        document.getElementById('output').textContent =
-          JSON.stringify(data, null, 2);
-      } catch (err) {
-        document.getElementById('output').textContent =
-          'Erro: ' + err.message;
-      }
-    }
+  async function post(endpoint) {
+    const res = await fetch(BASE_URL + endpoint, { method: 'POST' });
+    const data = await res.json();
+    document.getElementById('output').textContent =
+      JSON.stringify(data, null, 2);
+    loadProdutos();
+  }
 
-    // =====================================================
-    // FUNÇÃO PARA REQUISIÇÕES POST
-    // =====================================================
-    async function postApi(endpoint) {
-      document.getElementById('output').textContent = 'Processando...';
+  async function del(endpoint) {
+    await fetch(BASE_URL + endpoint, { method: 'DELETE' });
+  }
 
-      try {
-        const res = await fetch(BASE_URL + endpoint, {
-          method: 'POST'
-        });
+  // ================= DASHBOARD =================
+  async function loadDashboard() {
+    const data = await get('/debug/dashboard');
+    document.getElementById('dashboard').textContent =
+      `Produtos: ${data.produtos}\nTokens: ${data.tokens}`;
+  }
 
-        const data = await res.json();
+  // ================= PRODUTOS =================
+  async function loadProdutos() {
+    const ini = document.getElementById('prodInicio').value;
+    const fim = document.getElementById('prodFim').value;
 
-        document.getElementById('output').textContent =
-          JSON.stringify(data, null, 2);
-      } catch (err) {
-        document.getElementById('output').textContent =
-          'Erro: ' + err.message;
-      }
-    }
-  </script>
+    let url = '/debug/produtos';
+    const params = [];
+    if (ini) params.push(`data_inicio=${ini}`);
+    if (fim) params.push(`data_fim=${fim}`);
+    if (params.length) url += '?' + params.join('&');
+
+    const data = await get(url);
+
+    const table = document.getElementById('produtosTable');
+    table.innerHTML = `
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Preço</th>
+        <th>Plataforma</th>
+        <th>Criado</th>
+        <th>Ação</th>
+      </tr>
+    `;
+
+    data.produtos.forEach(p => {
+      table.innerHTML += `
+        <tr>
+          <td>${p.id}</td>
+          <td>${p.nome}</td>
+          <td>${p.preco}</td>
+          <td>${p.plataforma}</td>
+          <td>${p.created_at || p.criado_em}</td>
+          <td>
+            <button class="danger" onclick="deleteProduto(${p.id})">
+              Excluir
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  async function deleteProduto(id) {
+    if (!confirm('Excluir produto ' + id + '?')) return;
+    await del('/debug/produtos/' + id);
+    loadProdutos();
+  }
+
+  // ================= TOKENS =================
+  async function loadTokens() {
+    const data = await get('/debug/meli/tokens');
+
+    const table = document.getElementById('tokensTable');
+    table.innerHTML = `
+      <tr>
+        <th>ID</th>
+        <th>User</th>
+        <th>Criado</th>
+        <th>Expira</th>
+        <th>Ação</th>
+      </tr>
+    `;
+
+    data.forEach(t => {
+      table.innerHTML += `
+        <tr>
+          <td>${t.id}</td>
+          <td>${t.user_id}</td>
+          <td>${t.created_at}</td>
+          <td>${t.expires_at}</td>
+          <td>
+            <button class="danger" onclick="deleteToken(${t.id})">
+              Excluir
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  async function deleteToken(id) {
+    if (!confirm('Excluir token ' + id + '?')) return;
+    await del('/debug/meli/tokens/' + id);
+    loadTokens();
+  }
+</script>
 
 </body>
 </html>
