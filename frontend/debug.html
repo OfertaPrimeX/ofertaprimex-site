@@ -1,160 +1,199 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Debug — OfertaPrimeX</title>
+  <meta charset="UTF-8">
+  <title>Debug OfertaPrimeX</title>
 
-  <!-- Estilo simples, limpo e funcional -->
+  <!-- ===============================
+       ESTILO GERAL
+       =============================== -->
   <style>
-    body {
+    * {
+      box-sizing: border-box;
       font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
       background: #0f172a;
       color: #e5e7eb;
-      margin: 0;
+      display: flex;
+      height: 100vh;
+    }
+
+    /* ===============================
+       MENU LATERAL
+       =============================== */
+    #menu {
+      width: 260px;
+      background: #020617;
       padding: 20px;
+      border-right: 1px solid #1e293b;
     }
 
-    h1, h2 {
+    #menu h2 {
       color: #38bdf8;
+      margin-bottom: 20px;
     }
 
-    button {
+    #menu button {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
       background: #2563eb;
-      color: white;
       border: none;
-      padding: 10px 14px;
-      margin: 5px 0;
+      color: #fff;
       cursor: pointer;
       border-radius: 4px;
+      text-align: left;
     }
 
-    button:hover {
+    #menu button:hover {
       background: #1d4ed8;
     }
 
-    input {
-      padding: 8px;
-      margin: 5px 0;
-      width: 250px;
+    /* ===============================
+       ÁREA DE CONTEÚDO
+       =============================== */
+    #content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    h1 {
+      color: #38bdf8;
+    }
+
+    pre {
+      background: #020617;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
-      font-size: 14px;
+      margin-top: 15px;
     }
 
     th, td {
       border: 1px solid #334155;
-      padding: 6px;
-      text-align: left;
+      padding: 8px;
+      font-size: 14px;
     }
 
     th {
       background: #1e293b;
     }
 
-    .box {
-      background: #020617;
-      padding: 15px;
-      margin-bottom: 20px;
-      border-radius: 6px;
-    }
-
     .danger {
       background: #dc2626;
+      border: none;
+      color: #fff;
+      padding: 6px 10px;
+      cursor: pointer;
+      border-radius: 4px;
     }
 
     .danger:hover {
       background: #b91c1c;
     }
-
-    pre {
-      background: #020617;
-      padding: 10px;
-      overflow: auto;
-      max-height: 300px;
-    }
   </style>
 </head>
 <body>
 
-  <h1>🛠 Debug — OfertaPrimeX</h1>
+<!-- ===============================
+     MENU LATERAL
+     =============================== -->
+<div id="menu">
+  <h2>Debug</h2>
 
-  <!-- CONFIGURAÇÃO DA API -->
-  <script>
-    // URL DO BACKEND (OBRIGATÓRIO)
-    const API = 'https://yo0g0cg4c88w88osc4s04c0c.72.61.33.248.sslip.io';
-  </script>
+  <button onclick="statusServidor()">Status do Servidor</button>
+  <button onclick="statusBanco()">Status do Banco</button>
+  <button onclick="listarTabelas()">Tabelas do Banco</button>
+  <button onclick="listarProdutos()">Listar Produtos</button>
+  <button onclick="exportarProdutos()">Exportar Produtos (CSV)</button>
+</div>
 
-  <!-- STATUS -->
-  <div class="box">
-    <h2>Status</h2>
-    <button onclick="getStatus()">Status do Servidor</button>
-    <button onclick="getDB()">Status do Banco</button>
-    <pre id="status"></pre>
-  </div>
+<!-- ===============================
+     CONTEÚDO
+     =============================== -->
+<div id="content">
+  <h1>OfertaPrimeX — Debug</h1>
+  <div id="output">Selecione uma opção no menu.</div>
+</div>
 
-  <!-- TABELAS -->
-  <div class="box">
-    <h2>Tabelas do Banco</h2>
-    <button onclick="getTabelas()">Listar Tabelas</button>
-    <pre id="tabelas"></pre>
-  </div>
+<script>
+/* ======================================================
+   CONFIGURAÇÃO DA API
+   ====================================================== */
+const API_BASE = 'https://yo0g0cg4c88w88osc4s04c0c.72.61.33.248.sslip.io';
 
-  <!-- PRODUTOS -->
-  <div class="box">
-    <h2>Produtos</h2>
+/* ======================================================
+   FUNÇÃO UTILITÁRIA PARA EXIBIR JSON
+   ====================================================== */
+function mostrarJSON(data) {
+  document.getElementById('output').innerHTML =
+    `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+}
 
-    <button onclick="listarProdutos()">Listar Produtos</button>
+/* ======================================================
+   STATUS DO SERVIDOR
+   ====================================================== */
+async function statusServidor() {
+  try {
+    const res = await fetch(`${API_BASE}/debug/status`);
+    const data = await res.json();
+    mostrarJSON(data);
+  } catch (e) {
+    mostrarJSON({ erro: e.message });
+  }
+}
 
-    <table id="produtosTable"></table>
-  </div>
+/* ======================================================
+   STATUS DO BANCO
+   ====================================================== */
+async function statusBanco() {
+  try {
+    const res = await fetch(`${API_BASE}/debug/db`);
+    const data = await res.json();
+    mostrarJSON(data);
+  } catch (e) {
+    mostrarJSON({ erro: e.message });
+  }
+}
 
-  <!-- EXPORTAR -->
-  <div class="box">
-    <h2>Exportar Produtos</h2>
-    <button onclick="exportarCSV()">Exportar CSV</button>
-  </div>
+/* ======================================================
+   LISTAR TABELAS
+   ====================================================== */
+async function listarTabelas() {
+  try {
+    const res = await fetch(`${API_BASE}/debug/db/tabelas`);
+    const data = await res.json();
+    mostrarJSON(data);
+  } catch (e) {
+    mostrarJSON({ erro: e.message });
+  }
+}
 
-  <script>
-    // ---------------------------
-    // STATUS DO SERVIDOR
-    // ---------------------------
-    async function getStatus() {
-      const res = await fetch(`${API}/debug/status`);
-      document.getElementById('status').textContent =
-        JSON.stringify(await res.json(), null, 2);
+/* ======================================================
+   LISTAR PRODUTOS (CORRIGIDO)
+   ====================================================== */
+async function listarProdutos() {
+  try {
+    const res = await fetch(`${API_BASE}/debug/produtos`);
+    const data = await res.json();
+
+    if (!data.produtos || data.produtos.length === 0) {
+      document.getElementById('output').innerHTML =
+        '<p>Nenhum produto encontrado.</p>';
+      return;
     }
 
-    // ---------------------------
-    // STATUS DO BANCO
-    // ---------------------------
-    async function getDB() {
-      const res = await fetch(`${API}/debug/db`);
-      document.getElementById('status').textContent =
-        JSON.stringify(await res.json(), null, 2);
-    }
-
-    // ---------------------------
-    // LISTAR TABELAS
-    // ---------------------------
-    async function getTabelas() {
-      const res = await fetch(`${API}/debug/db/tabelas`);
-      document.getElementById('tabelas').textContent =
-        JSON.stringify(await res.json(), null, 2);
-    }
-
-    // ---------------------------
-    // LISTAR PRODUTOS
-    // ---------------------------
-    async function listarProdutos() {
-      const res = await fetch(`${API}/debug/produtos`);
-      const data = await res.json();
-
-      const table = document.getElementById('produtosTable');
-      table.innerHTML = `
+    let html = `
+      <table>
         <tr>
           <th>ID</th>
           <th>Nome</th>
@@ -162,60 +201,67 @@
           <th>Plataforma</th>
           <th>Ação</th>
         </tr>
+    `;
+
+    data.produtos.forEach(p => {
+      html += `
+        <tr>
+          <td>${p.id}</td>
+          <td>${p.nome}</td>
+          <td>${p.preco}</td>
+          <td>${p.plataforma}</td>
+          <td>
+            <button class="danger" onclick="excluirProduto(${p.id})">
+              Excluir
+            </button>
+          </td>
+        </tr>
       `;
+    });
 
-      data.produtos.forEach(p => {
-        table.innerHTML += `
-          <tr>
-            <td>${p.id}</td>
-            <td>${p.nome}</td>
-            <td>${p.preco}</td>
-            <td>${p.plataforma}</td>
-            <td>
-              <button class="danger" onclick="excluirProduto(${p.id})">
-                Excluir
-              </button>
-            </td>
-          </tr>
-        `;
-      });
-    }
+    html += '</table>';
+    document.getElementById('output').innerHTML = html;
 
-    // ---------------------------
-    // EXCLUIR PRODUTO
-    // ---------------------------
-    async function excluirProduto(id) {
-      if (!confirm('Deseja excluir este produto?')) return;
+  } catch (e) {
+    mostrarJSON({ erro: e.message });
+  }
+}
 
-      await fetch(`${API}/debug/produtos/${id}`, {
-        method: 'DELETE'
-      });
+/* ======================================================
+   EXCLUIR PRODUTO
+   ====================================================== */
+async function excluirProduto(id) {
+  if (!confirm('Deseja excluir este produto?')) return;
 
-      listarProdutos();
-    }
+  await fetch(`${API_BASE}/debug/produtos/${id}`, {
+    method: 'DELETE'
+  });
 
-    // ---------------------------
-    // EXPORTAR CSV
-    // ---------------------------
-    async function exportarCSV() {
-      const res = await fetch(`${API}/debug/produtos`);
-      const data = await res.json();
+  listarProdutos();
+}
 
-      let csv = 'id,nome,descricao,preco,plataforma\n';
+/* ======================================================
+   EXPORTAR PRODUTOS (CSV)
+   ====================================================== */
+async function exportarProdutos() {
+  const res = await fetch(`${API_BASE}/debug/produtos`);
+  const data = await res.json();
 
-      data.produtos.forEach(p => {
-        csv += `${p.id},"${p.nome}","${p.descricao}",${p.preco},${p.plataforma}\n`;
-      });
+  let csv = 'id,nome,descricao,preco,plataforma\n';
 
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
+  data.produtos.forEach(p => {
+    csv += `${p.id},"${p.nome}","${p.descricao}",${p.preco},${p.plataforma}\n`;
+  });
 
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'produtos.csv';
-      a.click();
-    }
-  </script>
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'produtos.csv';
+  a.click();
+}
+</script>
 
 </body>
 </html>
