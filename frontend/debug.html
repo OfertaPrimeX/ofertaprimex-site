@@ -4,8 +4,14 @@
   <meta charset="UTF-8">
   <title>Debug OfertaPrimeX</title>
 
+  <!-- ===============================
+       ESTILO GERAL
+       =============================== -->
   <style>
-    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
 
     body {
       margin: 0;
@@ -17,7 +23,7 @@
 
     /* MENU LATERAL */
     #menu {
-      width: 260px;
+      width: 280px;
       background: #020617;
       padding: 20px;
       border-right: 1px solid #1e293b;
@@ -31,13 +37,14 @@
     #menu button {
       width: 100%;
       padding: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       background: #2563eb;
       border: none;
       border-radius: 4px;
       color: #fff;
       cursor: pointer;
       text-align: left;
+      font-size: 14px;
     }
 
     #menu button:hover {
@@ -60,84 +67,116 @@
     th, td {
       border: 1px solid #334155;
       padding: 8px;
-      font-size: 14px;
+      font-size: 13px;
     }
 
-    th { background: #1e293b; }
+    th {
+      background: #1e293b;
+    }
 
     pre {
       background: #020617;
       padding: 15px;
       border-radius: 4px;
+      overflow-x: auto;
     }
   </style>
 </head>
 <body>
 
-<!-- MENU -->
+<!-- ===============================
+     MENU LATERAL
+     =============================== -->
 <div id="menu">
-  <h2>Debug</h2>
-  <button onclick="statusServidor()">Status do Servidor</button>
-  <button onclick="statusBanco()">Status do Banco</button>
-  <button onclick="listarTabelas()">Tabelas</button>
+  <h2>Debug Backend</h2>
 
-  <!-- 🔥 NOVO BOTÃO -->
+  <button onclick="statusServidor()">Status do Servidor</button>
+  <button onclick="statusEnv()">Variáveis de Ambiente</button>
+  <button onclick="statusBanco()">Status do Banco</button>
+  <button onclick="listarTabelas()">Listar Tabelas</button>
+
+  <!-- 🔥 BOTÃO CRÍTICO -->
   <button onclick="inserirProdutoTeste()">Inserir Produto Teste</button>
 
   <button onclick="listarProdutos()">Listar Produtos</button>
   <button onclick="exportarProdutos()">Exportar Produtos</button>
+
+  <button onclick="dashboard()">Dashboard</button>
 </div>
 
-<!-- CONTEÚDO -->
+<!-- ===============================
+     ÁREA DE RESULTADO
+     =============================== -->
 <div id="content">
   <h1>OfertaPrimeX — Debug</h1>
-  <div id="output">Escolha uma opção no menu.</div>
+  <div id="output">Selecione uma opção no menu.</div>
 </div>
 
 <script>
 /* =====================================================
    CONFIGURAÇÃO DO BACKEND
    ===================================================== */
-const API_BASE = 'https://yo0g0cg4c88w88osc4s04c0c.72.61.33.248.sslip.io';
+const API = 'https://yo0g0cg4c88w88osc4s04c0c.72.61.33.248.sslip.io';
 
+/* =====================================================
+   FUNÇÃO PADRÃO DE OUTPUT
+   ===================================================== */
 function output(html) {
   document.getElementById('output').innerHTML = html;
 }
 
 /* =====================================================
-   STATUS SERVIDOR
+   FUNÇÃO FETCH SEGURA (COM TRATAMENTO DE ERRO)
+   ===================================================== */
+async function fetchJson(url) {
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    output(`<pre>Erro ao acessar:\n${url}\n\n${err}</pre>`);
+    throw err;
+  }
+}
+
+/* =====================================================
+   STATUS DO SERVIDOR
    ===================================================== */
 async function statusServidor() {
-  const r = await fetch(`${API_BASE}/debug/status`);
-  output(`<pre>${JSON.stringify(await r.json(), null, 2)}</pre>`);
+  const data = await fetchJson(`${API}/debug/status`);
+  output(`<pre>${JSON.stringify(data, null, 2)}</pre>`);
+}
+
+/* =====================================================
+   ENV
+   ===================================================== */
+async function statusEnv() {
+  const data = await fetchJson(`${API}/debug/env`);
+  output(`<pre>${JSON.stringify(data, null, 2)}</pre>`);
 }
 
 /* =====================================================
    STATUS BANCO
    ===================================================== */
 async function statusBanco() {
-  const r = await fetch(`${API_BASE}/debug/db`);
-  output(`<pre>${JSON.stringify(await r.json(), null, 2)}</pre>`);
+  const data = await fetchJson(`${API}/debug/db`);
+  output(`<pre>${JSON.stringify(data, null, 2)}</pre>`);
 }
 
 /* =====================================================
    LISTAR TABELAS
    ===================================================== */
 async function listarTabelas() {
-  const r = await fetch(`${API_BASE}/debug/db/tabelas`);
-  output(`<pre>${JSON.stringify(await r.json(), null, 2)}</pre>`);
+  const data = await fetchJson(`${API}/debug/db/tabelas`);
+  output(`<pre>${JSON.stringify(data, null, 2)}</pre>`);
 }
 
 /* =====================================================
-   🔥 INSERIR PRODUTO TESTE (CHAVE DO DIAGNÓSTICO)
+   🔥 INSERIR PRODUTO TESTE
+   (USANDO GET — COMO VOCÊ VALIDOU NO NAVEGADOR)
    ===================================================== */
 async function inserirProdutoTeste() {
-  const r = await fetch(`${API_BASE}/debug/db/insert-teste`, {
-    method: 'POST'
-  });
-
-  const data = await r.json();
-
+  const data = await fetchJson(`${API}/debug/db/insert-teste`);
   output(`
     <h3>Produto inserido com sucesso</h3>
     <pre>${JSON.stringify(data, null, 2)}</pre>
@@ -149,11 +188,10 @@ async function inserirProdutoTeste() {
    LISTAR PRODUTOS
    ===================================================== */
 async function listarProdutos() {
-  const r = await fetch(`${API_BASE}/debug/produtos`);
-  const data = await r.json();
+  const data = await fetchJson(`${API}/debug/produtos`);
 
   if (!data.produtos || data.produtos.length === 0) {
-    output('<p><b>Nenhum produto encontrado no banco.</b></p>');
+    output('<b>Nenhum produto encontrado no banco.</b>');
     return;
   }
 
@@ -183,11 +221,10 @@ async function listarProdutos() {
 }
 
 /* =====================================================
-   EXPORTAR PRODUTOS
+   EXPORTAR PRODUTOS (CSV)
    ===================================================== */
 async function exportarProdutos() {
-  const r = await fetch(`${API_BASE}/debug/produtos`);
-  const data = await r.json();
+  const data = await fetchJson(`${API}/debug/produtos`);
 
   if (!data.produtos || data.produtos.length === 0) {
     alert('Nenhum produto para exportar');
@@ -207,6 +244,14 @@ async function exportarProdutos() {
   a.href = url;
   a.download = 'produtos.csv';
   a.click();
+}
+
+/* =====================================================
+   DASHBOARD
+   ===================================================== */
+async function dashboard() {
+  const data = await fetchJson(`${API}/debug/dashboard`);
+  output(`<pre>${JSON.stringify(data, null, 2)}</pre>`);
 }
 </script>
 
