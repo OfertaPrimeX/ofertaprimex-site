@@ -4,24 +4,18 @@
   <meta charset="UTF-8">
   <title>Debug OfertaPrimeX</title>
 
-  <!-- ===============================
-       ESTILO PADRÃO (IGUAL AO ANTERIOR)
-       =============================== -->
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
 
     body {
       margin: 0;
-      background: #0f172a;
-      color: #e5e7eb;
       display: flex;
       height: 100vh;
+      background: #0f172a;
+      color: #e5e7eb;
     }
 
-    /* MENU ESQUERDO */
+    /* MENU LATERAL */
     #menu {
       width: 260px;
       background: #020617;
@@ -31,18 +25,18 @@
 
     #menu h2 {
       color: #38bdf8;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
     #menu button {
       width: 100%;
-      margin-bottom: 10px;
       padding: 10px;
+      margin-bottom: 10px;
       background: #2563eb;
       border: none;
+      border-radius: 4px;
       color: #fff;
       cursor: pointer;
-      border-radius: 4px;
       text-align: left;
     }
 
@@ -50,21 +44,11 @@
       background: #1d4ed8;
     }
 
-    /* CONTEÚDO DIREITO */
+    /* CONTEÚDO */
     #content {
       flex: 1;
       padding: 20px;
       overflow-y: auto;
-    }
-
-    h1 {
-      color: #38bdf8;
-    }
-
-    pre {
-      background: #020617;
-      padding: 15px;
-      border-radius: 4px;
     }
 
     table {
@@ -79,16 +63,11 @@
       font-size: 14px;
     }
 
-    th {
-      background: #1e293b;
-    }
+    th { background: #1e293b; }
 
-    .danger {
-      background: #dc2626;
-      color: #fff;
-      border: none;
-      padding: 6px 10px;
-      cursor: pointer;
+    pre {
+      background: #020617;
+      padding: 15px;
       border-radius: 4px;
     }
   </style>
@@ -101,6 +80,10 @@
   <button onclick="statusServidor()">Status do Servidor</button>
   <button onclick="statusBanco()">Status do Banco</button>
   <button onclick="listarTabelas()">Tabelas</button>
+
+  <!-- 🔥 NOVO BOTÃO -->
+  <button onclick="inserirProdutoTeste()">Inserir Produto Teste</button>
+
   <button onclick="listarProdutos()">Listar Produtos</button>
   <button onclick="exportarProdutos()">Exportar Produtos</button>
 </div>
@@ -112,140 +95,118 @@
 </div>
 
 <script>
-/* ======================================================
-   CONFIGURAÇÃO ÚNICA DO BACKEND
-   ====================================================== */
+/* =====================================================
+   CONFIGURAÇÃO DO BACKEND
+   ===================================================== */
 const API_BASE = 'https://yo0g0cg4c88w88osc4s04c0c.72.61.33.248.sslip.io';
 
-/* ======================================================
-   UTILITÁRIO DE ERRO
-   ====================================================== */
-function erro(msg) {
-  document.getElementById('output').innerHTML =
-    `<pre style="color:#f87171">${msg}</pre>`;
+function output(html) {
+  document.getElementById('output').innerHTML = html;
 }
 
-/* ======================================================
+/* =====================================================
    STATUS SERVIDOR
-   ====================================================== */
+   ===================================================== */
 async function statusServidor() {
-  try {
-    const res = await fetch(`${API_BASE}/debug/status`);
-    if (!res.ok) throw new Error('Erro ao acessar servidor');
-    const data = await res.json();
-    document.getElementById('output').innerHTML =
-      `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-  } catch (e) {
-    erro(e.message);
-  }
+  const r = await fetch(`${API_BASE}/debug/status`);
+  output(`<pre>${JSON.stringify(await r.json(), null, 2)}</pre>`);
 }
 
-/* ======================================================
+/* =====================================================
    STATUS BANCO
-   ====================================================== */
+   ===================================================== */
 async function statusBanco() {
-  try {
-    const res = await fetch(`${API_BASE}/debug/db`);
-    if (!res.ok) throw new Error('Erro ao acessar banco');
-    const data = await res.json();
-    document.getElementById('output').innerHTML =
-      `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-  } catch (e) {
-    erro(e.message);
-  }
+  const r = await fetch(`${API_BASE}/debug/db`);
+  output(`<pre>${JSON.stringify(await r.json(), null, 2)}</pre>`);
 }
 
-/* ======================================================
+/* =====================================================
    LISTAR TABELAS
-   ====================================================== */
+   ===================================================== */
 async function listarTabelas() {
-  try {
-    const res = await fetch(`${API_BASE}/debug/db/tabelas`);
-    if (!res.ok) throw new Error('Erro ao listar tabelas');
-    const data = await res.json();
-    document.getElementById('output').innerHTML =
-      `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-  } catch (e) {
-    erro(e.message);
-  }
+  const r = await fetch(`${API_BASE}/debug/db/tabelas`);
+  output(`<pre>${JSON.stringify(await r.json(), null, 2)}</pre>`);
 }
 
-/* ======================================================
-   LISTAR PRODUTOS (CORRIGIDO)
-   ====================================================== */
+/* =====================================================
+   🔥 INSERIR PRODUTO TESTE (CHAVE DO DIAGNÓSTICO)
+   ===================================================== */
+async function inserirProdutoTeste() {
+  const r = await fetch(`${API_BASE}/debug/db/insert-teste`, {
+    method: 'POST'
+  });
+
+  const data = await r.json();
+
+  output(`
+    <h3>Produto inserido com sucesso</h3>
+    <pre>${JSON.stringify(data, null, 2)}</pre>
+    <p>Agora clique em <b>Listar Produtos</b>.</p>
+  `);
+}
+
+/* =====================================================
+   LISTAR PRODUTOS
+   ===================================================== */
 async function listarProdutos() {
-  try {
-    const res = await fetch(`${API_BASE}/debug/produtos`);
-    if (!res.ok) throw new Error('Erro ao listar produtos');
+  const r = await fetch(`${API_BASE}/debug/produtos`);
+  const data = await r.json();
 
-    const data = await res.json();
-
-    if (!data.produtos || data.produtos.length === 0) {
-      document.getElementById('output').innerHTML =
-        '<p>Nenhum produto encontrado.</p>';
-      return;
-    }
-
-    let html = `
-      <table>
-        <tr>
-          <th>ID</th>
-          <th>Nome</th>
-          <th>Preço</th>
-          <th>Plataforma</th>
-        </tr>
-    `;
-
-    data.produtos.forEach(p => {
-      html += `
-        <tr>
-          <td>${p.id}</td>
-          <td>${p.nome}</td>
-          <td>${p.preco}</td>
-          <td>${p.plataforma}</td>
-        </tr>
-      `;
-    });
-
-    html += '</table>';
-    document.getElementById('output').innerHTML = html;
-
-  } catch (e) {
-    erro(e.message);
+  if (!data.produtos || data.produtos.length === 0) {
+    output('<p><b>Nenhum produto encontrado no banco.</b></p>');
+    return;
   }
+
+  let html = `
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Preço</th>
+        <th>Plataforma</th>
+      </tr>
+  `;
+
+  data.produtos.forEach(p => {
+    html += `
+      <tr>
+        <td>${p.id}</td>
+        <td>${p.nome}</td>
+        <td>${p.preco}</td>
+        <td>${p.plataforma}</td>
+      </tr>
+    `;
+  });
+
+  html += '</table>';
+  output(html);
 }
 
-/* ======================================================
-   EXPORTAR PRODUTOS (CORRIGIDO)
-   ====================================================== */
+/* =====================================================
+   EXPORTAR PRODUTOS
+   ===================================================== */
 async function exportarProdutos() {
-  try {
-    const res = await fetch(`${API_BASE}/debug/produtos`);
-    if (!res.ok) throw new Error('Erro ao exportar produtos');
+  const r = await fetch(`${API_BASE}/debug/produtos`);
+  const data = await r.json();
 
-    const data = await res.json();
-    if (!data.produtos || data.produtos.length === 0) {
-      alert('Nenhum produto para exportar');
-      return;
-    }
-
-    let csv = 'id,nome,descricao,preco,plataforma\n';
-
-    data.produtos.forEach(p => {
-      csv += `${p.id},"${p.nome}","${p.descricao}",${p.preco},${p.plataforma}\n`;
-    });
-
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'produtos.csv';
-    a.click();
-
-  } catch (e) {
-    erro(e.message);
+  if (!data.produtos || data.produtos.length === 0) {
+    alert('Nenhum produto para exportar');
+    return;
   }
+
+  let csv = 'id,nome,descricao,preco,plataforma\n';
+
+  data.produtos.forEach(p => {
+    csv += `${p.id},"${p.nome}","${p.descricao}",${p.preco},${p.plataforma}\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'produtos.csv';
+  a.click();
 }
 </script>
 
