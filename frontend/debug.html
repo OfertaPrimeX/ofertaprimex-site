@@ -5,50 +5,55 @@
   <title>OfertaPrimeX — Painel de Debug</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-
     body {
       margin: 0;
-      background: #020617;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
       color: #e5e7eb;
       display: flex;
       height: 100vh;
     }
 
-    /* ================= MENU LATERAL ================= */
-    aside {
+    /* ===== MENU LATERAL ===== */
+    .sidebar {
       width: 260px;
       background: #020617;
-      border-right: 1px solid #1e293b;
       padding: 20px;
+      border-right: 1px solid #1e293b;
     }
 
-    aside h2 {
+    .sidebar h2 {
       color: #38bdf8;
       margin-bottom: 20px;
+      font-size: 18px;
     }
 
-    aside button {
+    .sidebar button {
       width: 100%;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       padding: 10px;
-      background: #1e293b;
-      color: white;
+      background: #2563eb;
+      color: #fff;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       text-align: left;
     }
 
-    aside button:hover {
-      background: #334155;
+    .sidebar button:hover {
+      background: #1d4ed8;
     }
 
-    /* ================= CONTEÚDO ================= */
-    main {
+    .sidebar .danger {
+      background: #b91c1c;
+    }
+
+    .sidebar .danger:hover {
+      background: #991b1b;
+    }
+
+    /* ===== CONTEÚDO ===== */
+    .content {
       flex: 1;
       padding: 20px;
       overflow: auto;
@@ -56,149 +61,119 @@
 
     h1 {
       color: #38bdf8;
-    }
-
-    .actions {
-      margin-bottom: 15px;
-    }
-
-    input, button.action {
-      padding: 8px;
-      margin-right: 5px;
-      border-radius: 5px;
-      border: none;
-    }
-
-    button.action {
-      background: #2563eb;
-      color: white;
-      cursor: pointer;
-    }
-
-    button.action:hover {
-      background: #1d4ed8;
-    }
-
-    button.danger {
-      background: #b91c1c;
+      margin-top: 0;
     }
 
     pre {
       background: #020617;
-      border: 1px solid #1e293b;
       padding: 15px;
       border-radius: 6px;
       max-height: 70vh;
       overflow: auto;
+      border: 1px solid #1e293b;
+    }
+
+    .filters {
+      margin-bottom: 15px;
+    }
+
+    .filters input {
+      padding: 6px;
+      margin-right: 6px;
+      border-radius: 4px;
+      border: none;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ================= MENU ================= -->
-  <aside>
+  <!-- ===== MENU LATERAL ===== -->
+  <div class="sidebar">
     <h2>🛠 Debug</h2>
 
-    <button onclick="get('/debug/status')">Status Backend</button>
-    <button onclick="get('/debug/env')">Variáveis de Ambiente</button>
-    <button onclick="get('/debug/db')">Teste Banco</button>
-    <button onclick="get('/debug/db/tabelas')">Listar Tabelas</button>
-    <button onclick="get('/debug/dashboard')">Dashboard</button>
+    <button onclick="callApi('/debug/status')">Status Backend</button>
+    <button onclick="callApi('/debug/env')">Variáveis de Ambiente</button>
+    <button onclick="callApi('/debug/db')">Teste Banco</button>
+    <button onclick="callApi('/debug/db/tabelas')">Listar Tabelas</button>
 
     <hr />
 
-    <button onclick="listarProdutos()">📦 Listar Produtos</button>
-    <button onclick="listarProdutosPorData()">📅 Produtos por Data</button>
-    <button onclick="exportarProdutos()">⬇ Exportar Produtos</button>
+    <button onclick="listarProdutos()">Listar Produtos</button>
+    <button onclick="listarTokens()">Listar Tokens</button>
 
-    <input type="file" id="fileInput" />
-    <button onclick="importarProdutos()">⬆ Importar Produtos</button>
+    <button class="danger" onclick="insertProdutoTeste()">
+      Inserir Produto Teste
+    </button>
+  </div>
 
-    <hr />
+  <!-- ===== CONTEÚDO ===== -->
+  <div class="content">
+    <h1>📊 Resultado</h1>
 
-    <button onclick="get('/debug/meli/tokens')">🔑 Listar Tokens</button>
-  </aside>
+    <div class="filters">
+      <label>Data início:</label>
+      <input type="date" id="dataInicio" />
 
-  <!-- ================= CONTEÚDO ================= -->
-  <main>
-    <h1>Painel de Debug — OfertaPrimeX</h1>
-
-    <div class="actions">
-      <input type="number" id="deleteId" placeholder="ID Produto" />
-      <button class="action danger" onclick="excluirProduto()">Excluir Produto</button>
+      <label>Data fim:</label>
+      <input type="date" id="dataFim" />
     </div>
 
-    <pre id="output">Selecione uma opção no menu...</pre>
-  </main>
+    <pre id="output">Selecione uma opção no menu à esquerda…</pre>
+  </div>
 
-  <!-- ================= SCRIPT ================= -->
+  <!-- ===== SCRIPT ===== -->
   <script>
-    const BASE_URL = 'https://SEU_BACKEND_AQUI'; // 🔴 ALTERE
+    // 🔴 MUITO IMPORTANTE: backend correto
+    const BASE_URL = 'https://yo0g0cg4c88w88osc4s04c0c.72.61.33.248.sslip.io/';
 
-    async function get(endpoint) {
-      const res = await fetch(BASE_URL + endpoint);
-      const data = await res.json();
-      mostrar(data);
+    const output = document.getElementById('output');
+
+    function mostrarResultado(data) {
+      output.textContent = JSON.stringify(data, null, 2);
     }
 
-    function mostrar(data) {
-      document.getElementById('output').textContent =
-        JSON.stringify(data, null, 2);
+    async function callApi(endpoint) {
+      try {
+        const res = await fetch(BASE_URL + endpoint);
+        const data = await res.json();
+        mostrarResultado(data);
+      } catch (err) {
+        mostrarResultado({ erro: err.message });
+      }
     }
 
-    /* ================= PRODUTOS ================= */
+    async function listarProdutos() {
+      const dataInicio = document.getElementById('dataInicio').value;
+      const dataFim = document.getElementById('dataFim').value;
 
-    function listarProdutos() {
-      get('/debug/produtos');
+      let url = '/debug/produtos';
+      const params = [];
+
+      if (dataInicio) params.push(`data_inicio=${dataInicio}`);
+      if (dataFim) params.push(`data_fim=${dataFim}`);
+
+      if (params.length) {
+        url += '?' + params.join('&');
+      }
+
+      callApi(url);
     }
 
-    function listarProdutosPorData() {
-      const inicio = prompt('Data início (YYYY-MM-DD)');
-      const fim = prompt('Data fim (YYYY-MM-DD)');
-      get(`/debug/produtos?data_inicio=${inicio}&data_fim=${fim}`);
+    async function listarTokens() {
+      callApi('/debug/meli/tokens');
     }
 
-    async function excluirProduto() {
-      const id = document.getElementById('deleteId').value;
-      if (!id) return alert('Informe o ID');
-      const res = await fetch(`${BASE_URL}/debug/produtos/${id}`, {
-        method: 'DELETE'
-      });
-      mostrar(await res.json());
-    }
-
-    /* ================= IMPORTAÇÃO ================= */
-    async function importarProdutos() {
-      const file = document.getElementById('fileInput').files[0];
-      if (!file) return alert('Selecione um arquivo');
-
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const res = await fetch(`${BASE_URL}/debug/produtos/import`, {
-        method: 'POST',
-        body: formData
-      });
-
-      mostrar(await res.json());
-    }
-
-    /* ================= EXPORTAÇÃO ================= */
-    async function exportarProdutos() {
-      const res = await fetch(`${BASE_URL}/debug/produtos`);
-      const data = await res.json();
-
-      const csv = [
-        Object.keys(data.produtos[0]).join(','),
-        ...data.produtos.map(p => Object.values(p).join(','))
-      ].join('\n');
-
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'produtos.csv';
-      a.click();
+    async function insertProdutoTeste() {
+      try {
+        const res = await fetch(BASE_URL + '/debug/db/insert-teste', {
+          method: 'POST'
+        });
+        const data = await res.json();
+        mostrarResultado(data);
+      } catch (err) {
+        mostrarResultado({ erro: err.message });
+      }
     }
   </script>
 
