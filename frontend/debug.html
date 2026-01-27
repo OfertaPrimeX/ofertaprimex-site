@@ -1,77 +1,315 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Debug OfertaPrimeX</title>
-<style>
-body { margin:0; display:flex; height:100vh; font-family:Arial; background:#0f172a; color:#e5e7eb }
-#menu { width:260px; background:#020617; padding:20px }
-#menu button { width:100%; margin-bottom:8px; padding:10px; cursor:pointer }
-#content { flex:1; padding:20px }
-input { width:100%; padding:8px; margin-bottom:8px }
-</style>
+  <meta charset="UTF-8">
+  <title>Debug OfertaPrimeX</title>
+
+  <!-- ===============================
+       ESTILO GERAL
+       =============================== -->
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      display: flex;
+      height: 100vh;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+
+    /* MENU LATERAL */
+    #menu {
+      width: 300px;
+      background: #020617;
+      padding: 20px;
+      border-right: 1px solid #1e293b;
+    }
+
+    #menu h2 {
+      color: #38bdf8;
+      margin-bottom: 15px;
+    }
+
+    #menu button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 8px;
+      background: #2563eb;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    #menu button:hover {
+      background: #1d4ed8;
+    }
+
+    #menu button.danger {
+      background: #dc2626;
+    }
+
+    #menu button.danger:hover {
+      background: #b91c1c;
+    }
+
+    /* CONTEÚDO */
+    #content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #334155;
+      padding: 8px;
+      font-size: 13px;
+    }
+
+    th {
+      background: #1e293b;
+    }
+
+    pre {
+      background: #020617;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      border: none;
+    }
+  </style>
 </head>
 
 <body>
 
+<!-- ===============================
+     MENU LATERAL
+     =============================== -->
 <div id="menu">
-  <h3>Login Debug</h3>
-  <input id="user" placeholder="Usuário">
-  <input id="pass" type="password" placeholder="Senha">
-  <button onclick="login()">Entrar</button>
+  <h2>Debug Backend</h2>
+
+  <!-- LOGIN -->
+  <input id="user" placeholder="Usuário debug">
+  <input id="pass" type="password" placeholder="Senha debug">
+  <button onclick="login()">Login</button>
+  <button class="danger" onclick="logout()">Logout</button>
 
   <hr>
 
-  <button onclick="call('/debug/status')">Status</button>
-  <button onclick="call('/debug/db')">Banco</button>
-  <button onclick="call('/debug/db/tabelas')">Tabelas</button>
-  <button onclick="call('/debug/db/insert-teste')">Inserir Produto</button>
-  <button onclick="call('/debug/produtos')">Listar Produtos</button>
+  <!-- AÇÕES -->
+  <button onclick="statusServidor()">Status do Servidor</button>
+  <button onclick="statusBanco()">Status do Banco</button>
+  <button onclick="listarTabelas()">Listar Tabelas</button>
+  <button onclick="inserirProdutoTeste()">Inserir Produto Teste</button>
+  <button onclick="listarProdutos()">Listar Produtos</button>
 </div>
 
+<!-- ===============================
+     ÁREA DE RESULTADO
+     =============================== -->
 <div id="content">
-  <pre id="out">Faça login</pre>
+  <h1>OfertaPrimeX — Debug</h1>
+  <div id="output">Faça login para começar.</div>
 </div>
 
 <script>
-const API = 'https://yo0g0cg4c88w88osc4s04c0c.72.61.33.248.sslip.io;
-let TOKEN = localStorage.getItem('debug_token');
+/* =====================================================
+   CONFIGURAÇÃO DO BACKEND
+   ===================================================== */
+const API = 'https://yo0g0cg4c88w88osc4s04c0c.72.61.33.248.sslip.io'; // <<< TROQUE AQUI
 
-function out(t) {
-  document.getElementById('out').textContent = t;
+/* =====================================================
+   TOKEN (LOCALSTORAGE)
+   ===================================================== */
+function getToken() {
+  return localStorage.getItem('debug_token');
 }
 
+function setToken(token) {
+  localStorage.setItem('debug_token', token);
+}
+
+function clearToken() {
+  localStorage.removeItem('debug_token');
+}
+
+/* =====================================================
+   OUTPUT PADRÃO
+   ===================================================== */
+function output(html) {
+  document.getElementById('output').innerHTML = html;
+}
+
+/* =====================================================
+   FETCH COM AUTH
+   ===================================================== */
+async function fetchAuth(url, options = {}) {
+  const token = getToken();
+
+  if (!token) {
+    output('<b>⚠️ Faça login primeiro.</b>');
+    throw new Error('Sem token');
+  }
+
+  const res = await fetch(url, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token,
+      ...(options.headers || {})
+    }
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw err;
+  }
+
+  return res.json();
+}
+
+/* =====================================================
+   LOGIN
+   ===================================================== */
 async function login() {
-  const res = await fetch(API + '/debug/login', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      user: user.value,
-      pass: pass.value
-    })
+  const user = document.getElementById('user').value;
+  const pass = document.getElementById('pass').value;
+
+  const res = await fetch(`${API}/debug/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ user, pass })
   });
 
   const data = await res.json();
 
-  if (data.token) {
-    TOKEN = data.token;
-    localStorage.setItem('debug_token', TOKEN);
-    out('✅ Login efetuado');
-  } else {
-    out('❌ Login inválido');
+  if (!res.ok) {
+    output(`<pre>${JSON.stringify(data, null, 2)}</pre>`);
+    return;
   }
+
+  setToken(data.token);
+  output('<b>✅ Login realizado com sucesso</b>');
 }
 
-async function call(path) {
-  if (!TOKEN) return out('❌ Faça login primeiro');
+/* =====================================================
+   LOGOUT
+   ===================================================== */
+function logout() {
+  clearToken();
+  output('🔒 Logout realizado');
+}
 
-  const r = await fetch(API + path, {
-    headers:{ Authorization: TOKEN }
+/* =====================================================
+   STATUS SERVIDOR
+   ===================================================== */
+async function statusServidor() {
+  const data = await fetchAuth(`${API}/debug/status`);
+  output(`<pre>${JSON.stringify(data, null, 2)}</pre>`);
+}
+
+/* =====================================================
+   STATUS BANCO
+   ===================================================== */
+async function statusBanco() {
+  const data = await fetchAuth(`${API}/debug/db`);
+  output(`<pre>${JSON.stringify(data, null, 2)}</pre>`);
+}
+
+/* =====================================================
+   LISTAR TABELAS
+   ===================================================== */
+async function listarTabelas() {
+  const data = await fetchAuth(`${API}/debug/db/tabelas`);
+  output(`<pre>${JSON.stringify(data, null, 2)}</pre>`);
+}
+
+/* =====================================================
+   INSERIR PRODUTO TESTE
+   ===================================================== */
+async function inserirProdutoTeste() {
+  const data = await fetchAuth(`${API}/debug/db/insert-teste`, {
+    method: 'POST'
   });
 
-  const d = await r.json();
-  out(JSON.stringify(d, null, 2));
+  output(`
+    <h3>Produto inserido</h3>
+    <pre>${JSON.stringify(data, null, 2)}</pre>
+  `);
+}
+
+/* =====================================================
+   LISTAR PRODUTOS + EXCLUIR
+   ===================================================== */
+async function listarProdutos() {
+  const produtos = await fetchAuth(`${API}/debug/produtos`);
+
+  if (!produtos.length) {
+    output('<b>Nenhum produto encontrado</b>');
+    return;
+  }
+
+  let html = `
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Preço</th>
+        <th>Ação</th>
+      </tr>
+  `;
+
+  produtos.forEach(p => {
+    html += `
+      <tr>
+        <td>${p.id}</td>
+        <td>${p.nome}</td>
+        <td>${p.preco}</td>
+        <td>
+          <button class="danger" onclick="excluirProduto(${p.id})">
+            Excluir
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+
+  html += '</table>';
+  output(html);
+}
+
+/* =====================================================
+   EXCLUIR PRODUTO
+   ===================================================== */
+async function excluirProduto(id) {
+  if (!confirm('Confirma exclusão do produto ' + id + '?')) return;
+
+  await fetchAuth(`${API}/debug/produtos/${id}`, {
+    method: 'DELETE'
+  });
+
+  listarProdutos();
 }
 </script>
+
 </body>
 </html>
