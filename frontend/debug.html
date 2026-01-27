@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>OfertaPrimeX — Painel de Debug</title>
+  <title>OfertaPrimeX — Debug</title>
 
   <style>
     body {
@@ -14,40 +14,35 @@
       height: 100vh;
     }
 
-    /* ===== MENU LATERAL ===== */
+    /* MENU LATERAL */
     .sidebar {
       width: 260px;
       background: #020617;
       padding: 20px;
-      box-sizing: border-box;
+      border-right: 1px solid #1e293b;
     }
 
     .sidebar h2 {
       color: #38bdf8;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     .sidebar button {
       width: 100%;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       padding: 10px;
       background: #2563eb;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      text-align: left;
     }
 
     .sidebar button:hover {
       background: #1d4ed8;
     }
 
-    .danger {
-      background: #b91c1c !important;
-    }
-
-    /* ===== CONTEÚDO ===== */
+    /* CONTEÚDO */
     .content {
       flex: 1;
       padding: 20px;
@@ -58,145 +53,127 @@
       color: #38bdf8;
     }
 
-    label {
-      display: block;
-      margin-top: 10px;
+    .card {
+      background: #020617;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
     }
 
-    input {
-      margin-top: 5px;
-      padding: 6px;
-      border-radius: 4px;
-      border: none;
-      width: 220px;
-    }
-
-    .actions button {
+    input[type="file"] {
       margin-top: 10px;
-      margin-right: 10px;
-      padding: 10px 15px;
-      background: #2563eb;
+      margin-bottom: 10px;
       color: white;
+    }
+
+    button.action {
+      padding: 10px 15px;
+      background: #16a34a;
       border: none;
       border-radius: 6px;
+      color: white;
       cursor: pointer;
     }
 
-    .actions button:hover {
-      background: #1d4ed8;
+    button.action:hover {
+      background: #15803d;
     }
 
     pre {
       background: #020617;
       padding: 15px;
       border-radius: 6px;
-      margin-top: 20px;
-      max-height: 500px;
+      max-height: 400px;
       overflow: auto;
+      border: 1px solid #1e293b;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ===== MENU ===== -->
+  <!-- MENU -->
   <div class="sidebar">
     <h2>🛠 Debug</h2>
 
     <button onclick="callApi('/debug/status')">Status</button>
     <button onclick="callApi('/debug/env')">Env</button>
-    <button onclick="callApi('/debug/db')">Teste DB</button>
-    <button onclick="callApi('/debug/db/tabelas')">Tabelas</button>
-    <button onclick="callApi('/debug/dashboard')">Dashboard</button>
-
-    <hr>
-
-    <button onclick="listarProdutos()">📦 Listar Produtos</button>
-    <button onclick="listarProdutosPorData()">📅 Produtos por Data</button>
-
-    <button class="danger" onclick="excluirProduto()">🗑 Excluir Produto</button>
-
-    <hr>
-
-    <button onclick="callApi('/debug/meli/tokens')">🔑 Tokens ML</button>
+    <button onclick="callApi('/debug/db')">Banco</button>
+    <button onclick="callApi('/debug/produtos')">Listar Produtos</button>
+    <button onclick="callApi('/debug/meli/tokens')">Tokens ML</button>
   </div>
 
-  <!-- ===== CONTEÚDO ===== -->
+  <!-- CONTEÚDO -->
   <div class="content">
-    <h1>Painel de Debug — OfertaPrimeX</h1>
+    <h1>Importação de Produtos (CSV)</h1>
 
-    <!-- FILTRO POR DATA -->
-    <label>Data início:</label>
-    <input type="date" id="data_inicio">
+    <div class="card">
+      <p>
+        Formato esperado do CSV:
+      </p>
+      <pre>
+nome,descricao,preco,imagem_url,plataforma
+Produto A,Descrição A,99.9,,IMPORT
+Produto B,Descrição B,120.5,,IMPORT
+      </pre>
 
-    <label>Data fim:</label>
-    <input type="date" id="data_fim">
+      <input type="file" id="csvFile" accept=".csv" />
 
-    <div class="actions">
-      <button onclick="listarProdutosPorData()">Confirmar filtro</button>
+      <br />
+
+      <button class="action" onclick="importCsv()">
+        Importar CSV
+      </button>
     </div>
 
-    <!-- EXCLUSÃO -->
-    <label>ID do produto para excluir:</label>
-    <input type="number" id="produto_id">
-
-    <div class="actions">
-      <button class="danger" onclick="excluirProduto()">Excluir produto</button>
-    </div>
-
-    <pre id="output">Resultado aparecerá aqui...</pre>
+    <h2>Resultado</h2>
+    <pre id="output">Aguardando ação...</pre>
   </div>
 
   <script>
-    // 🔴 AJUSTE SEU BACKEND AQUI
-    const BASE_URL = 'https://yo0g0cg4c88w88osc4s04c0c.72.61.33.248.sslip.io/';
+    // 🔴 ALTERE PARA SEU BACKEND
+    const BASE_URL = 'https://SEU_BACKEND_AQUI';
 
     async function callApi(endpoint) {
       try {
         const res = await fetch(BASE_URL + endpoint);
         const data = await res.json();
-        show(data);
+        document.getElementById('output').textContent =
+          JSON.stringify(data, null, 2);
       } catch (err) {
-        show({ erro: err.message });
+        document.getElementById('output').textContent =
+          'Erro: ' + err.message;
       }
     }
 
-    function show(data) {
-      document.getElementById('output').textContent =
-        JSON.stringify(data, null, 2);
-    }
+    async function importCsv() {
+      const fileInput = document.getElementById('csvFile');
 
-    // ===== PRODUTOS =====
-    async function listarProdutos() {
-      callApi('/debug/produtos');
-    }
-
-    async function listarProdutosPorData() {
-      const inicio = document.getElementById('data_inicio').value;
-      const fim = document.getElementById('data_fim').value;
-
-      let url = '/debug/produtos?';
-      if (inicio) url += `data_inicio=${inicio}&`;
-      if (fim) url += `data_fim=${fim}`;
-
-      callApi(url);
-    }
-
-    async function excluirProduto() {
-      const id = document.getElementById('produto_id').value;
-      if (!id) {
-        show({ erro: 'Informe o ID do produto' });
+      if (!fileInput.files.length) {
+        alert('Selecione um arquivo CSV');
         return;
       }
 
+      const formData = new FormData();
+      formData.append('file', fileInput.files[0]);
+
       try {
-        const res = await fetch(`${BASE_URL}/debug/produtos/${id}`, {
-          method: 'DELETE'
-        });
+        const res = await fetch(
+          BASE_URL + '/debug/produtos/import-csv',
+          {
+            method: 'POST',
+            body: formData
+          }
+        );
+
         const data = await res.json();
-        show(data);
+
+        document.getElementById('output').textContent =
+          JSON.stringify(data, null, 2);
+
       } catch (err) {
-        show({ erro: err.message });
+        document.getElementById('output').textContent =
+          'Erro: ' + err.message;
       }
     }
   </script>
