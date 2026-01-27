@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>OfertaPrimeX — Painel de Debug</title>
+  <title>OfertaPrimeX — Debug</title>
 
   <style>
     body {
@@ -10,8 +10,8 @@
       font-family: Arial, sans-serif;
       background: #0f172a;
       color: #e5e7eb;
-      display: flex;
       height: 100vh;
+      display: flex;
     }
 
     /* ===== MENU LATERAL ===== */
@@ -20,17 +20,17 @@
       background: #020617;
       padding: 20px;
       box-sizing: border-box;
-      border-right: 1px solid #1e293b;
     }
 
     .sidebar h2 {
       color: #38bdf8;
       margin-bottom: 20px;
+      font-size: 18px;
     }
 
     .sidebar button {
       width: 100%;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       padding: 10px;
       background: #2563eb;
       color: white;
@@ -44,8 +44,8 @@
       background: #1d4ed8;
     }
 
-    .sidebar .danger {
-      background: #b91c1c;
+    .danger {
+      background: #b91c1c !important;
     }
 
     /* ===== CONTEÚDO ===== */
@@ -60,45 +60,25 @@
       color: #38bdf8;
     }
 
-    .box {
-      background: #020617;
-      padding: 15px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-    }
-
     label {
       display: block;
       margin-top: 10px;
-      margin-bottom: 4px;
+      margin-bottom: 5px;
     }
 
     input {
-      padding: 6px;
+      padding: 8px;
+      width: 250px;
       border-radius: 4px;
       border: none;
-      width: 200px;
-    }
-
-    .action {
-      margin-top: 10px;
-      padding: 8px 14px;
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .action:hover {
-      background: #1d4ed8;
     }
 
     pre {
       background: #020617;
       padding: 15px;
       border-radius: 6px;
-      max-height: 400px;
+      margin-top: 20px;
+      max-height: 500px;
       overflow: auto;
     }
   </style>
@@ -106,79 +86,85 @@
 
 <body>
 
-  <!-- ===== MENU ESQUERDO ===== -->
+  <!-- ===== MENU ===== -->
   <div class="sidebar">
     <h2>🛠 Debug</h2>
 
-    <button onclick="callApi('/debug/status')">Status Backend</button>
-    <button onclick="callApi('/debug/env')">Variáveis de Ambiente</button>
-    <button onclick="callApi('/debug/db')">Teste Banco</button>
-    <button onclick="callApi('/debug/db/tabelas')">Listar Tabelas</button>
+    <button onclick="get('/debug/status')">Status</button>
+    <button onclick="get('/debug/env')">Env</button>
+    <button onclick="get('/debug/db')">Banco</button>
+    <button onclick="get('/debug/db/tabelas')">Tabelas</button>
 
-    <hr>
+    <button onclick="get('/debug/produtos')">Listar Produtos</button>
+    <button onclick="get('/debug/meli/tokens')">Listar Tokens</button>
 
-    <button onclick="callApi('/debug/produtos')">Listar Produtos</button>
-    <button onclick="callApi('/debug/meli/tokens')">Listar Tokens</button>
-    <button onclick="callApi('/debug/dashboard')">Dashboard</button>
+    <button onclick="get('/debug/dashboard')">Dashboard</button>
+
+    <button class="danger" onclick="post('/debug/db/insert-teste')">
+      Inserir Produto Teste
+    </button>
   </div>
 
-  <!-- ===== CONTEÚDO DIREITO ===== -->
+  <!-- ===== CONTEÚDO ===== -->
   <div class="content">
-    <h1>OfertaPrimeX — Painel de Debug</h1>
+    <h1>📊 Resultado</h1>
 
     <!-- FILTRO POR DATA -->
-    <div class="box">
-      <h3>📅 Produtos por Data</h3>
+    <h3>Filtro de Produtos por Data</h3>
 
-      <label>Data início</label>
-      <input type="date" id="dataInicio">
+    <label>Data Início</label>
+    <input type="date" id="dataInicio">
 
-      <label>Data fim</label>
-      <input type="date" id="dataFim">
+    <label>Data Fim</label>
+    <input type="date" id="dataFim">
 
-      <br><br>
-      <button class="action" onclick="listarPorData()">
-        Confirmar filtro
-      </button>
-    </div>
+    <br><br>
+    <button onclick="filtrarProdutos()">Filtrar</button>
 
-    <!-- EXCLUSÃO -->
-    <div class="box">
-      <h3>🗑 Excluir Produto</h3>
+    <!-- IMPORTAÇÃO CSV -->
+    <h3>Importar Produtos (CSV)</h3>
 
-      <label>ID do produto</label>
-      <input type="number" id="produtoId">
+    <input type="file" id="csvFile" accept=".csv">
+    <br><br>
+    <button onclick="importarCSV()">Importar CSV</button>
 
-      <br><br>
-      <button class="action" onclick="excluirProduto()">
-        Excluir produto
-      </button>
-    </div>
-
-    <!-- RESULTADO -->
-    <div class="box">
-      <h3>📄 Resultado</h3>
-      <pre id="output">Aguardando ação...</pre>
-    </div>
+    <pre id="output">Resultado aparecerá aqui…</pre>
   </div>
 
   <!-- ===== SCRIPT ===== -->
   <script>
-    const BASE_URL = 'https://yo0g0cg4c88w88osc4s04c0c.72.61.33.248.sslip.io';
+    // 🔴 CONFIRA SE ESTE ENDEREÇO ESTÁ CORRETO
+    const BASE_URL = 'https://yo0g0cg4c88w88osc4s04c0c.72.61.33.248.sslip.io/';
 
-    async function callApi(endpoint) {
+    const output = document.getElementById('output');
+
+    function mostrar(data) {
+      output.textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function get(endpoint) {
       try {
         const res = await fetch(BASE_URL + endpoint);
         const data = await res.json();
-        document.getElementById('output').textContent =
-          JSON.stringify(data, null, 2);
+        mostrar(data);
       } catch (err) {
-        document.getElementById('output').textContent =
-          'Erro: ' + err.message;
+        mostrar({ erro: err.message });
       }
     }
 
-    async function listarPorData() {
+    async function post(endpoint) {
+      try {
+        const res = await fetch(BASE_URL + endpoint, {
+          method: 'POST'
+        });
+        const data = await res.json();
+        mostrar(data);
+      } catch (err) {
+        mostrar({ erro: err.message });
+      }
+    }
+
+    async function filtrarProdutos() {
       const inicio = document.getElementById('dataInicio').value;
       const fim = document.getElementById('dataFim').value;
 
@@ -186,29 +172,46 @@
       if (inicio) url += `data_inicio=${inicio}&`;
       if (fim) url += `data_fim=${fim}`;
 
-      callApi(url);
+      get(url);
     }
 
-    async function excluirProduto() {
-      const id = document.getElementById('produtoId').value;
-      if (!id) {
-        alert('Informe o ID do produto');
+    async function importarCSV() {
+      const fileInput = document.getElementById('csvFile');
+      if (!fileInput.files.length) {
+        alert('Selecione um arquivo CSV');
         return;
       }
 
-      if (!confirm(`Confirma excluir o produto ${id}?`)) return;
+      const file = fileInput.files[0];
+      const text = await file.text();
+      const linhas = text.split('\n');
 
-      try {
-        const res = await fetch(`${BASE_URL}/debug/produtos/${id}`, {
-          method: 'DELETE'
+      const produtos = [];
+
+      for (let i = 1; i < linhas.length; i++) {
+        const linha = linhas[i].trim();
+        if (!linha) continue;
+
+        const [nome, descricao, preco, imagem_url, plataforma] = linha.split(',');
+
+        produtos.push({
+          nome,
+          descricao,
+          preco: Number(preco),
+          imagem_url: imagem_url || null,
+          plataforma
         });
-        const data = await res.json();
-        document.getElementById('output').textContent =
-          JSON.stringify(data, null, 2);
-      } catch (err) {
-        document.getElementById('output').textContent =
-          'Erro: ' + err.message;
       }
+
+      mostrar({
+        sucesso: true,
+        mensagem: 'CSV lido com sucesso',
+        total: produtos.length,
+        produtos
+      });
+
+      // OBS: aqui só exibimos
+      // o endpoint de importação no backend será o próximo passo
     }
   </script>
 
