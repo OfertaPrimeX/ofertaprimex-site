@@ -2,246 +2,175 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>OfertaPrimeX — Debug</title>
+  <title>OfertaPrimeX — Painel de Debug</title>
 
   <style>
+    /* =========================
+       RESET BÁSICO
+    ========================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: Arial, sans-serif;
-      background: #0f172a;
+      background: #020617;
       color: #e5e7eb;
+      height: 100vh;
+      display: flex;
+    }
+
+    /* =========================
+       MENU LATERAL
+    ========================= */
+    .sidebar {
+      width: 260px;
+      background: #0f172a;
       padding: 20px;
+      border-right: 1px solid #1e293b;
     }
 
-    h1, h2 {
+    .sidebar h2 {
       color: #38bdf8;
+      margin-bottom: 20px;
+      font-size: 18px;
     }
 
-    button {
-      margin: 4px;
-      padding: 8px 14px;
-      background: #2563eb;
-      color: white;
+    .sidebar button {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      background: #1e40af;
+      color: #fff;
       border: none;
       border-radius: 6px;
       cursor: pointer;
+      text-align: left;
+      font-size: 14px;
     }
 
-    button:hover {
+    .sidebar button:hover {
       background: #1d4ed8;
     }
 
-    button.danger {
+    .sidebar button.danger {
       background: #b91c1c;
     }
 
-    input {
-      padding: 6px;
-      margin: 4px;
-      border-radius: 4px;
-      border: none;
+    .sidebar button.danger:hover {
+      background: #991b1b;
     }
 
-    .box {
-      background: #020617;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
+    /* =========================
+       ÁREA PRINCIPAL
+    ========================= */
+    .main {
+      flex: 1;
+      padding: 20px;
+      overflow: auto;
+    }
+
+    .main h1 {
+      color: #38bdf8;
+      margin-bottom: 10px;
+    }
+
+    .main p {
+      margin-bottom: 15px;
+      color: #cbd5f5;
     }
 
     pre {
       background: #020617;
+      border: 1px solid #1e293b;
       padding: 15px;
-      border-radius: 8px;
-      max-height: 400px;
+      border-radius: 6px;
+      max-height: 70vh;
       overflow: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    th, td {
-      border-bottom: 1px solid #334155;
-      padding: 8px;
-      text-align: left;
-    }
-
-    th {
-      color: #38bdf8;
+      font-size: 13px;
     }
   </style>
 </head>
 
 <body>
 
-<h1>🛠️ Painel de Debug — OfertaPrimeX</h1>
+  <!-- =========================
+       MENU LATERAL
+  ========================= -->
+  <aside class="sidebar">
+    <h2>🛠 Debug</h2>
 
-<!-- ================= STATUS / ENV / DB ================= -->
-<div class="box">
-  <h2>Backend</h2>
-  <button onclick="get('/debug/status')">Status</button>
-  <button onclick="get('/debug/env')">Env</button>
-  <button onclick="get('/debug/db')">Teste DB</button>
-  <button onclick="get('/debug/db/tabelas')">Tabelas</button>
-</div>
+    <button onclick="callApi('/debug/status')">Status Backend</button>
+    <button onclick="callApi('/debug/env')">Variáveis de Ambiente</button>
+    <button onclick="callApi('/debug/db')">Teste Banco</button>
+    <button onclick="callApi('/debug/db/tabelas')">Listar Tabelas</button>
 
-<!-- ================= DASHBOARD ================= -->
-<div class="box">
-  <h2>Dashboard</h2>
-  <button onclick="loadDashboard()">Atualizar</button>
-  <pre id="dashboard"></pre>
-</div>
+    <hr style="margin:15px 0;border-color:#1e293b">
 
-<!-- ================= PRODUTOS ================= -->
-<div class="box">
-  <h2>Produtos</h2>
+    <button onclick="callApi('/debug/produtos')">Listar Produtos</button>
+    <button onclick="callApi('/debug/meli/tokens')">Listar Tokens</button>
+    <button onclick="callApi('/debug/dashboard')">Dashboard Resumo</button>
 
-  <div>
-    <input type="date" id="prodInicio">
-    <input type="date" id="prodFim">
-    <button onclick="loadProdutos()">Listar</button>
-    <button class="danger" onclick="post('/debug/db/insert-teste')">
+    <hr style="margin:15px 0;border-color:#1e293b">
+
+    <button class="danger" onclick="postApi('/debug/db/insert-teste')">
       Inserir Produto Teste
     </button>
-  </div>
+  </aside>
 
-  <table id="produtosTable"></table>
-</div>
+  <!-- =========================
+       ÁREA DE RESULTADO
+  ========================= -->
+  <main class="main">
+    <h1>OfertaPrimeX — Painel de Debug</h1>
+    <p>Selecione uma opção no menu lateral para executar a verificação.</p>
 
-<!-- ================= TOKENS ================= -->
-<div class="box">
-  <h2>Tokens Mercado Livre</h2>
-  <button onclick="loadTokens()">Listar Tokens</button>
-  <table id="tokensTable"></table>
-</div>
+    <pre id="output">Resultado aparecerá aqui…</pre>
+  </main>
 
-<!-- ================= SAÍDA RAW ================= -->
-<div class="box">
-  <h2>Resposta Bruta</h2>
-  <pre id="output">---</pre>
-</div>
+  <!-- =========================
+       SCRIPT
+  ========================= -->
+  <script>
+    // 🔴 URL DO BACKEND (MANTER A SUA)
+    const BASE_URL = 'https://yo0g0cg4c88w88osc4s04c0c.72.61.33.248.sslip.io';
 
-<script>
-  // 🔴 ALTERE SE NECESSÁRIO
-  const BASE_URL = 'https://yo0g0cg4c88w88osc4s04c0c.72.61.33.248.sslip.io';
+    // =========================
+    // GET
+    // =========================
+    async function callApi(endpoint) {
+      document.getElementById('output').textContent = 'Carregando...';
+      try {
+        const res = await fetch(BASE_URL + endpoint);
+        const data = await res.json();
+        document.getElementById('output').textContent =
+          JSON.stringify(data, null, 2);
+      } catch (err) {
+        document.getElementById('output').textContent =
+          'Erro: ' + err.message;
+      }
+    }
 
-  // ================= UTIL =================
-  async function get(endpoint) {
-    const res = await fetch(BASE_URL + endpoint);
-    const data = await res.json();
-    document.getElementById('output').textContent =
-      JSON.stringify(data, null, 2);
-    return data;
-  }
-
-  async function post(endpoint) {
-    const res = await fetch(BASE_URL + endpoint, { method: 'POST' });
-    const data = await res.json();
-    document.getElementById('output').textContent =
-      JSON.stringify(data, null, 2);
-    loadProdutos();
-  }
-
-  async function del(endpoint) {
-    await fetch(BASE_URL + endpoint, { method: 'DELETE' });
-  }
-
-  // ================= DASHBOARD =================
-  async function loadDashboard() {
-    const data = await get('/debug/dashboard');
-    document.getElementById('dashboard').textContent =
-      `Produtos: ${data.produtos}\nTokens: ${data.tokens}`;
-  }
-
-  // ================= PRODUTOS =================
-  async function loadProdutos() {
-    const ini = document.getElementById('prodInicio').value;
-    const fim = document.getElementById('prodFim').value;
-
-    let url = '/debug/produtos';
-    const params = [];
-    if (ini) params.push(`data_inicio=${ini}`);
-    if (fim) params.push(`data_fim=${fim}`);
-    if (params.length) url += '?' + params.join('&');
-
-    const data = await get(url);
-
-    const table = document.getElementById('produtosTable');
-    table.innerHTML = `
-      <tr>
-        <th>ID</th>
-        <th>Nome</th>
-        <th>Preço</th>
-        <th>Plataforma</th>
-        <th>Criado</th>
-        <th>Ação</th>
-      </tr>
-    `;
-
-    data.produtos.forEach(p => {
-      table.innerHTML += `
-        <tr>
-          <td>${p.id}</td>
-          <td>${p.nome}</td>
-          <td>${p.preco}</td>
-          <td>${p.plataforma}</td>
-          <td>${p.created_at || p.criado_em}</td>
-          <td>
-            <button class="danger" onclick="deleteProduto(${p.id})">
-              Excluir
-            </button>
-          </td>
-        </tr>
-      `;
-    });
-  }
-
-  async function deleteProduto(id) {
-    if (!confirm('Excluir produto ' + id + '?')) return;
-    await del('/debug/produtos/' + id);
-    loadProdutos();
-  }
-
-  // ================= TOKENS =================
-  async function loadTokens() {
-    const data = await get('/debug/meli/tokens');
-
-    const table = document.getElementById('tokensTable');
-    table.innerHTML = `
-      <tr>
-        <th>ID</th>
-        <th>User</th>
-        <th>Criado</th>
-        <th>Expira</th>
-        <th>Ação</th>
-      </tr>
-    `;
-
-    data.forEach(t => {
-      table.innerHTML += `
-        <tr>
-          <td>${t.id}</td>
-          <td>${t.user_id}</td>
-          <td>${t.created_at}</td>
-          <td>${t.expires_at}</td>
-          <td>
-            <button class="danger" onclick="deleteToken(${t.id})">
-              Excluir
-            </button>
-          </td>
-        </tr>
-      `;
-    });
-  }
-
-  async function deleteToken(id) {
-    if (!confirm('Excluir token ' + id + '?')) return;
-    await del('/debug/meli/tokens/' + id);
-    loadTokens();
-  }
-</script>
+    // =========================
+    // POST
+    // =========================
+    async function postApi(endpoint) {
+      document.getElementById('output').textContent = 'Executando...';
+      try {
+        const res = await fetch(BASE_URL + endpoint, {
+          method: 'POST'
+        });
+        const data = await res.json();
+        document.getElementById('output').textContent =
+          JSON.stringify(data, null, 2);
+      } catch (err) {
+        document.getElementById('output').textContent =
+          'Erro: ' + err.message;
+      }
+    }
+  </script>
 
 </body>
 </html>
