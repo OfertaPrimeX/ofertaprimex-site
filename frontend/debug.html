@@ -83,12 +83,10 @@
 
 <div id="menu">
   <h2>Debug Backend</h2>
-
   <input id="user" placeholder="Usuário debug">
   <input id="pass" type="password" placeholder="Senha debug">
   <button onclick="login()">Login</button>
   <button class="danger" onclick="logout()">Logout</button>
-
   <hr>
 
   <button onclick="statusServidor()">Status do Servidor</button>
@@ -98,13 +96,11 @@
   <button onclick="listarProdutos()">Listar Produtos</button>
 
   <hr>
-
   <button onclick="exportarProdutos()">Exportar Produtos</button>
   <button onclick="mostrarImportacao()">Importar Produtos</button>
 
   <hr>
-
-  <!-- 🔥 NOVO -->
+  <!-- 🔥 MERCADO LIVRE -->
   <button onclick="statusMeli()">Status Mercado Livre</button>
 </div>
 
@@ -171,6 +167,7 @@ async function login() {
   setToken(data.token);
   output('<b>✅ Login realizado com sucesso</b>');
 }
+
 function logout() {
   clearToken();
   output('🔒 Logout realizado');
