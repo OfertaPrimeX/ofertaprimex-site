@@ -83,10 +83,12 @@
 
 <div id="menu">
   <h2>Debug Backend</h2>
+
   <input id="user" placeholder="Usuário debug">
   <input id="pass" type="password" placeholder="Senha debug">
   <button onclick="login()">Login</button>
   <button class="danger" onclick="logout()">Logout</button>
+
   <hr>
 
   <button onclick="statusServidor()">Status do Servidor</button>
@@ -96,10 +98,12 @@
   <button onclick="listarProdutos()">Listar Produtos</button>
 
   <hr>
+
   <button onclick="exportarProdutos()">Exportar Produtos</button>
   <button onclick="mostrarImportacao()">Importar Produtos</button>
 
   <hr>
+
   <!-- 🔥 MERCADO LIVRE -->
   <button onclick="statusMeli()">Status Mercado Livre</button>
 </div>
@@ -200,8 +204,7 @@ async function listarProdutos() {
         <th>Nome</th>
         <th>Preço</th>
         <th>Ação</th>
-      </tr>
-  `;
+      </tr>`;
   produtos.forEach(p => {
     html += `
       <tr>
@@ -211,8 +214,7 @@ async function listarProdutos() {
         <td>
           <button class="danger" onclick="excluirProduto(${p.id})">Excluir</button>
         </td>
-      </tr>
-    `;
+      </tr>`;
   });
   html += '</table>';
   output(html);
